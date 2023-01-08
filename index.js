@@ -20,6 +20,9 @@ const serverdb = sequelize.define('server', {
 		type: Sequelize.STRING,
 		unique: true,
 	},
+	guildName: Sequelize.STRING,
+	channel: Sequelize.STRING,
+	invite: Sequelize.STRING,
 	description: Sequelize.STRING,
 	timestamp: Sequelize.STRING,
 });
