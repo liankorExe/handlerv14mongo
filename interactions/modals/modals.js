@@ -1,0 +1,3 @@
+modalList = {}
+
+module.exports = { modalList }

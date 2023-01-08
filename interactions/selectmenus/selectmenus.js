@@ -1,0 +1,3 @@
+selectMenuList = {}
+
+module.exports = { selectMenuList }

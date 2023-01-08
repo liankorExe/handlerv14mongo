@@ -13,6 +13,7 @@ function deploy_commands(client, loadcommands) {
 
     const commands = [];
     client.commands = new Collection();
+    client.help = ""
     const commandCategories = fs.readdirSync('./commands').filter(file => !file.includes('.'));
     for (const category of commandCategories) {
         const commandFiles = fs.readdirSync(`./commands/${category}`).filter(file => file.endsWith('.js'));
@@ -20,6 +21,7 @@ function deploy_commands(client, loadcommands) {
             const command = require(`./commands/${category}/${file}`);
             commands.push(command.data);
             client.commands.set(command.data.name, command);
+            client.help = client.help + `\`${command.data.name}\`: ${command.data.description}\n`
 
             console.log(`${category}/${command.data.name} chargé !`);
         }

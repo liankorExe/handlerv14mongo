@@ -5,12 +5,7 @@ const { token, sequelizeCredentials } = require('./config.json');
 const { deploy_commands } = require('./functions.js');
 
 const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-		GatewayIntentBits.GuildMembers,
-		GatewayIntentBits.GuildBans,
-		GatewayIntentBits.GuildMessages
-    ]
+    intents: []
 });
 
 const sequelize = new Sequelize('database', sequelizeCredentials.username, sequelizeCredentials.password, {
