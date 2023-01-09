@@ -94,5 +94,4 @@ async function sendServers(client) {
     }
 }
 
-
-module.exports = { deploy_commands }
+module.exports = { deploy_commands, sendServers }
