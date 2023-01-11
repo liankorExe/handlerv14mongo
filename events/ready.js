@@ -8,7 +8,7 @@ module.exports = {
         console.info(`[INFO] Bot online - ${client.user.tag} (${client.user.id})`)
         client.user.setStatus('online');
         //cron.schedule("0 */4 * * *", function() {
-        cron.schedule("*/10 * * * * *", async function() {
+        cron.schedule("* */4 * * *", async function() {
             console.info(`[RUNNER] Started sending servers`);
             await sendServers(client)
             console.info(`[RUNNER] Finished sending servers`);
