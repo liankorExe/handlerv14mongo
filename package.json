@@ -1,6 +1,6 @@
 {
   "name": "adsharebot",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Discord bot that aims at make discord servers gain members by sharing their server",
   "main": "index.js",
   "scripts": {
