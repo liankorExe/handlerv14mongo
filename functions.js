@@ -1,8 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const { token, clientId } = require('./config.json');
-const { Collection, EmbedBuilder } = require('discord.js')
-const { isBoolean } = require('util')
+const { Collection, EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 const rest = new REST({ version: '10' }).setToken(token);
 
@@ -49,25 +48,22 @@ async function slashCommandLoad(client, commands) {
     return client.commands;
 };
 
-function shuffledNoDuplicates(array){
-    let rArray = array;
-    var m = array.length, t, i;
-    while(m){
-        i = Math.floor(Math.random() * --m);
-        t = array[m];
-        rArray[m] = array[i];
-        rArray[i] = t;
-    }
-    return rArray;
-};
-
 async function sendServers(client) {
-    const senderServerList = await client.database.serverdb.findAll();
-    if (!sanctionList || sanctionList==0) return console.warn("[WARN] No server found in the database, skipping server sending");
+    const senderServerList = await client.database.server.findAll();
+    if (!senderServerList || senderServerList==0) return console.warn("[WARN] No server found in the database, skipping server sending");
 
-    const receiverServerList = shuffledNoDuplicates(senderServerList);
+    const receiverServerList = await client.database.server.findAll();
+
+    for (i = receiverServerList.length - 1; i > 0; i--) {
+        console.log(i)
+        j = Math.floor(Math.random() * (i + 1));
+        x = receiverServerList[i];
+        receiverServerList[i] = receiverServerList[j];
+        receiverServerList[j] = x;
+    }
 
     for (let index = 0; index < senderServerList.length; index++) {
+        console.log(index)
         const senderServer = senderServerList[index];
         const receiverServerGuild = await client.guilds.cache.get(receiverServerList[index].name);
         if(!receiverServerGuild) {
@@ -92,6 +88,8 @@ async function sendServers(client) {
             console.warn(`[WARN] [SENDER] Was unable to send to channel ${receiverChannel.id} (from server ${receiverServerGuild.name})`)
         }
     }
+    console.log("Sent servers")
+    return "Sent servers"
 }
 
 module.exports = { deploy_commands, sendServers }
