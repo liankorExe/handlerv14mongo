@@ -24,14 +24,14 @@ module.exports = {
     async execute(interaction, client){
         await interaction.deferReply({ ephemeral: true });
         if(!interaction.member.permissions.has(PermissionsBitField.Flags.Administrator)) return interaction.editReply({ embeds: [noPermEMBED] });
-        /*if(interaction.guild.memberCount<=200) return interaction.editReply({
+        if(interaction.guild.memberCount<=200) return interaction.editReply({
             embeds: [
                 new EmbedBuilder()
                     .setTitle("Erreur !")
                     .setDescription(`Désolé !\nMon système est uniquement disponible sur les serveurs de plus de 200 membres !\nIl s'agit principalement d'une sécurité destinée à éviter le spam de serveurs. Désolé du désagrément !`)
                     .setColor("#85ca62")
             ]
-        });*/
+        });
         switch(interaction.options.getSubcommand()){
             case 'salon':
                 channel = interaction.options.getChannel('salon');
