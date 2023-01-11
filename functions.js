@@ -7,7 +7,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 
 
-function deploy_commands(client, loadcommands) {
+function deploy_commands_global(client, loadcommands) {
     if (!typeof loadcommands === Boolean) throw "type of loadcommands argument needs to be boolean";
 
     console.info('[INFO] Slash commands loading started');
@@ -15,11 +15,11 @@ function deploy_commands(client, loadcommands) {
     const commands = [];
     client.commands = new Collection();
     client.help = ""
-    const commandCategories = fs.readdirSync('./commands').filter(file => !file.includes('.'));
+    const commandCategories = fs.readdirSync('./commands/global').filter(file => !file.includes('.'));
     for (const category of commandCategories) {
-        const commandFiles = fs.readdirSync(`./commands/${category}`).filter(file => file.endsWith('.js'));
+        const commandFiles = fs.readdirSync(`./commands/global/${category}`).filter(file => file.endsWith('.js'));
         for (const file of commandFiles) {
-            const command = require(`./commands/${category}/${file}`);
+            const command = require(`./commands/global/${category}/${file}`);
             commands.push(command.data);
             client.commands.set(command.data.name, command);
             client.help = client.help + `\`${command.data.name}\`: ${command.data.description}\n`
@@ -36,10 +36,52 @@ function deploy_commands(client, loadcommands) {
     console.info('[INFO] Slash commands loaded !');
 }
 
+function deploy_commands_guild(client, loadcommands, guildId) {
+    if (!typeof loadcommands === Boolean) throw "type of loadcommands argument needs to be boolean";
+
+    console.info('[INFO] Slash commands loading started');
+
+    const commands = [];
+    client.commands = new Collection();
+    client.help = ""
+    const commandCategories = fs.readdirSync('./commands/support').filter(file => !file.includes('.'));
+    for (const category of commandCategories) {
+        const commandFiles = fs.readdirSync(`./commands/support/${category}`).filter(file => file.endsWith('.js'));
+        for (const file of commandFiles) {
+            const command = require(`./commands/support/${category}/${file}`);
+            commands.push(command.data);
+            client.commands.set(command.data.name, command);
+            client.help = client.help + `\`${command.data.name}\`: ${command.data.description}\n`
+
+            console.log(`[LOADER] ${category}/${command.data.name} loaded`);
+        }
+    }
+    if (loadcommands){
+        slashCommandLoadGuild(client, commands, guildId);
+    }
+    else{//Deletes slash commands
+        slashCommandLoadGuild(client, [], guildId)
+    }
+    console.info('[INFO] Slash commands loaded !');
+}
+
 async function slashCommandLoad(client, commands) {
     try {
         await rest.put(
             Routes.applicationCommands(clientId),
+            { body: commands },
+        );    
+    } catch (error) {
+        console.error(error);
+    }
+    return client.commands;
+};
+
+
+async function slashCommandLoadGuild(client, commands, guildId) {
+    try {
+        await rest.put(
+            Routes.applicationGuildCommands(clientId, guildId),
             { body: commands },
         );    
     } catch (error) {
@@ -92,4 +134,4 @@ async function sendServers(client) {
     return "Sent servers"
 }
 
-module.exports = { deploy_commands, sendServers }
+module.exports = { deploy_commands_global, deploy_commands_guild, sendServers }
