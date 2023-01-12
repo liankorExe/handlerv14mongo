@@ -13,7 +13,7 @@ function deploy_commands_global_and_guild(client, loadcommands, guildId) {
     console.info('[INFO] Slash commands loading started');
 
     const commands = [];
-    client.commands = new Collection();
+    client.globalCommands = new Collection();
     client.help = ""
     const commandCategories = fs.readdirSync('./commands/global').filter(file => !file.includes('.'));
     for (const category of commandCategories) {
@@ -21,7 +21,7 @@ function deploy_commands_global_and_guild(client, loadcommands, guildId) {
         for (const file of commandFiles) {
             const command = require(`./commands/global/${category}/${file}`);
             commands.push(command.data);
-            client.commands.set(command.data.name, command);
+            client.globalCommands.set(command.data.name, command);
             client.help = client.help + `\`${command.data.name}\`: ${command.data.description}\n`
 
             console.log(`[LOADER] ${category}/${command.data.name} loaded`);
@@ -35,26 +35,31 @@ function deploy_commands_global_and_guild(client, loadcommands, guildId) {
     }
 
 
+
+    guildCommands = [];
+    client.guildCommands = new Collection();
+
     const guildCommandCategories = fs.readdirSync('./commands/support').filter(file => !file.includes('.'));
     for (const category of guildCommandCategories) {
         const commandFiles = fs.readdirSync(`./commands/support/${category}`).filter(file => file.endsWith('.js'));
         for (const file of commandFiles) {
             const command = require(`./commands/support/${category}/${file}`);
-            commands.push(command.data);
-            client.commands.set(command.data.name, command);
-            client.help = client.help + `\`${command.data.name}\`: ${command.data.description}\n`
+            guildCommands.push(command.data);
+            client.guildCommands.set(command.data.name, command);
 
             console.log(`[LOADER] ${category}/${command.data.name} loaded`);
         }
     }
     if (loadcommands){
-        slashCommandLoadGuild(client, commands, guildId);
+        slashCommandLoadGuild(client, guildCommands, guildId);
     }
     else{//Deletes slash commands
         slashCommandLoadGuild(client, [], guildId)
     }
     console.info('[INFO] Slash commands loaded !');
 }
+
+
 
 async function slashCommandLoad(client, commands) {
     try {

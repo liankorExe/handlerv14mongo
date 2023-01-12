@@ -7,8 +7,7 @@ module.exports = {
     async execute(interaction, client) {
         
         if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
-            const command = client.commands.get(interaction.commandName);
-            console.log(command)
+            const command = client.globalCommands.get(interaction.commandName) || client.guildCommands.get(interaction.commandName);
             if (!command) return;
             
             try {
