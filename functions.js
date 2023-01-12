@@ -7,7 +7,7 @@ const rest = new REST({ version: '10' }).setToken(token);
 
 
 
-function deploy_commands_global(client, loadcommands) {
+function deploy_commands_global_and_guild(client, loadcommands, guildId) {
     if (!typeof loadcommands === Boolean) throw "type of loadcommands argument needs to be boolean";
 
     console.info('[INFO] Slash commands loading started');
@@ -33,19 +33,10 @@ function deploy_commands_global(client, loadcommands) {
     else{//Deletes slash commands
         slashCommandLoad(client, [])
     }
-    console.info('[INFO] Slash commands loaded !');
-}
 
-function deploy_commands_guild(client, loadcommands, guildId) {
-    if (!typeof loadcommands === Boolean) throw "type of loadcommands argument needs to be boolean";
 
-    console.info('[INFO] Slash commands loading started');
-
-    const commands = [];
-    client.commands = new Collection();
-    client.help = ""
-    const commandCategories = fs.readdirSync('./commands/support').filter(file => !file.includes('.'));
-    for (const category of commandCategories) {
+    const guildCommandCategories = fs.readdirSync('./commands/support').filter(file => !file.includes('.'));
+    for (const category of guildCommandCategories) {
         const commandFiles = fs.readdirSync(`./commands/support/${category}`).filter(file => file.endsWith('.js'));
         for (const file of commandFiles) {
             const command = require(`./commands/support/${category}/${file}`);
@@ -134,4 +125,4 @@ async function sendServers(client) {
     return "Sent servers"
 }
 
-module.exports = { deploy_commands_global, deploy_commands_guild, sendServers }
+module.exports = { deploy_commands_global_and_guild, sendServers }

@@ -2,7 +2,7 @@ const fs = require('fs');
 const Sequelize = require('sequelize');
 const { Client, GatewayIntentBits } = require("discord.js");
 const { token, sequelizeCredentials, guildId } = require('./config.json');
-const { deploy_commands, deploy_commands_guild, deploy_commands_global } = require('./functions.js');
+const { deploy_commands_global_and_guild } = require('./functions.js');
 
 const client = new Client({
     intents: [
@@ -45,8 +45,7 @@ for (const file of eventFiles) {
 	}
 }
 
-deploy_commands_global(client, true);
-deploy_commands_guild(client, true, guildId);//true: will refresh slash commands
+deploy_commands_global_and_guild(client, true, guildId);//true: will refresh slash commands
 
 
 client.login(token);
