@@ -8,6 +8,7 @@ module.exports = {
         
         if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
             const command = client.commands.get(interaction.commandName);
+            console.log(command)
             if (!command) return;
             
             try {

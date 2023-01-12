@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js')
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js')
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,7 +18,20 @@ module.exports = {
                     .setTitle('Commandes')
                     .setColor('#53a05d')
                     .setDescription(client.help),
-            ]
+            ],
+            components: [helpROW],
         })
     }
 }
+
+const helpROW = new ActionRowBuilder()
+    .addComponents([
+        new ButtonBuilder()
+            .setLabel("Inviter le bot")
+            .setStyle(ButtonStyle.Link)
+            .setURL("https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0"),
+        new ButtonBuilder()
+            .setLabel("Rejoindre le support")
+            .setStyle(ButtonStyle.Link)
+            .setURL("https://discord.gg/4wcNDQvnxc"),
+    ])
