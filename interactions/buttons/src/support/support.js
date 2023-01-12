@@ -1,4 +1,7 @@
 const { ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle, EmbedBuilder, ChannelType, PermissionFlagsBits, ButtonBuilder, ButtonStyle } = require("discord.js")
+const { staffIdList } = require('../../../../config.json')
+const timer = ms => new Promise( res => setTimeout(res, ms));
+const parser = require('cron-parser');
 
 module.exports = {
     async execute(interaction, client){
@@ -75,6 +78,40 @@ module.exports = {
                     });
                 })
                 break;
+            case 'admission-confirm':
+                await interaction.deferReply()
+                if(!staffIdList.includes(interaction.user.id)) return interaction.editReply({ content: "Vous n'avez pas la permission de faire cela !", ephemeral: true });
+                tempReply = await interaction.editReply({ content: `<@${interaction.user.id}> va valider cette admission dans les 5 prochaines minutes !` });
+                await interaction.message.edit({ components: [loadingadmissionROW] });
+
+                const Sinvite = await interaction.client.fetchInvite(interaction.message.embeds[1].data.url);
+
+                client.database.awaitingServers.push(Sinvite.guild.id);
+                const isGuildId = (element) => element == Sinvite.guild.id;
+
+                let confirmed=false;
+                let count = 0;
+                while (count<10 && confirmed==false) {
+                    await timer(3000);//30000 for 30 seconds -> 5m total delay
+                    count++;
+                    //console.log(`${5-count/2} minutes remaining`);
+                    if(client.database.awaitingServers.findIndex(isGuildId)==-1) confirmed = true
+                }
+
+                confirmed = true
+
+                if(!confirmed){
+                    client.database.awaitingServers.splice(client.database.awaitingServers.findIndex(isGuildId), 1);
+                    await interaction.message.edit({ components: [admissionROW] });
+                    tempReply.delete()
+                } else {
+                    await interaction.message.edit({ components: [doneadmissionROW] });
+                    tempReply.edit({ content: `${Sinvite.guild.name} a été validé et ajouté à ma liste de serveurs !\nProchain envoi de serveur: <t:${parser.parseExpression("0 */4 * * *").next().toDate().getTime()/1000}:R>` })
+                }
+
+                break;
+            case 'admission-reject':
+                break;
         }
     }
 }
@@ -116,5 +153,32 @@ const admissionROW = new ActionRowBuilder()
         new ButtonBuilder()
             .setCustomId('support_admission-reject')
             .setLabel('Rejeter la demande')
+            .setStyle(ButtonStyle.Danger)
+    ])
+    
+const loadingadmissionROW = new ActionRowBuilder()
+    .addComponents([
+        new ButtonBuilder()
+            .setCustomId('support_admission-confirm')
+            .setLabel('Validation en cours')
+            .setEmoji("1063164632698720338")
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(true),
+        new ButtonBuilder()
+            .setCustomId('support_admission-reject')
+            .setLabel('Rejeter la demande')
+            .setStyle(ButtonStyle.Danger)
+    ])
+
+const doneadmissionROW = new ActionRowBuilder()
+    .addComponents([
+        new ButtonBuilder()
+            .setCustomId('support_admission-confirm')
+            .setLabel('Admission confirmée')
+            .setStyle(ButtonStyle.Success)
+            .setDisabled(true),
+        new ButtonBuilder()
+            .setCustomId('support_admission-cloce')
+            .setLabel('Fermer le ticket')
             .setStyle(ButtonStyle.Danger)
     ])

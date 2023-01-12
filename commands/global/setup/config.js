@@ -14,11 +14,6 @@ module.exports = {
                 .addChannelTypes(ChannelType.GuildText)
                 .setRequired(true)
             )
-            .addStringOption(option => option
-                .setName("description")
-                .setDescription("La description du serveur")
-                .setRequired(true)
-            )
         )
         .setDefaultMemberPermissions(0x8),
     async execute(interaction, client){

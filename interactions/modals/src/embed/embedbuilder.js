@@ -6,7 +6,7 @@ module.exports = {
         
 		const type = interaction.customId.replace("embedbuilder_","");
 		let embedmsg = interaction.message.content || null;
-		let newembed = new EmbedBuilder(interaction.message.embeds[0].data);
+		let newembed = new EmbedBuilder(interaction.message.embeds[0]?.data);
 		switch(type){
 			case 'author':
 				let name = interaction.fields.getTextInputValue('embedbuilder_authorname');
@@ -61,7 +61,7 @@ module.exports = {
                 if (!getexistingembedchannel) return interaction.followUp({ content: "Je n'ai pas trouvé le salon indiqué, merci de vérifier les ids", ephemeral: true })
                 const getexistingmessage = await getexistingembedchannel.messages.fetch(getexistingmessageid)
                 if (!getexistingmessage) return interaction.followUp({ content: "Je n'ai pas trouvé le message indiqué, merci de vérifier les ids", ephemeral: true })
-                newembed = new EmbedBuilder(getexistingmessage.embeds[0].data) || newembed;
+                newembed = new EmbedBuilder(getexistingmessage.embeds[0]?.data) || newembed;
 				break;
 				
 			case 'editexisting':

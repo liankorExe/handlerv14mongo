@@ -32,7 +32,8 @@ const serverdb = sequelize.define('server', {
 serverdb.sync()
 
 client.database = {
-    server: serverdb
+    server: serverdb,
+	awaitingServers: []
 }
 
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
