@@ -23,11 +23,13 @@ module.exports = {
 const ticketsupportRow = new ActionRowBuilder()
     .addComponents([
         new ButtonBuilder()
-            .setLabel("Inviter le bot")
+            .setLabel("Ajouter le bot")
+            .setEmoji("➕")
             .setStyle(ButtonStyle.Link)
             .setURL("https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0"),
         new ButtonBuilder()
             .setLabel("Formulaire")
+            .setEmoji("📜")
             .setStyle(ButtonStyle.Success)
             .setCustomId("support_form"),
     ]);
