@@ -88,20 +88,30 @@ module.exports = {
 
                 client.database.awaitingServers.push(Sinvite.guild.id);
                 const isGuildId = (element) => element == Sinvite.guild.id;
+                const reviewCommand = await client.application.commands.create({
+                    name: 'review',
+                    description: 'Commande de validation d\'admission',
+                    options: [{
+                        type: 7,
+                        name: "channel",
+                        description: "Salon où envoyer les messages du bot",
+                        required: true,
+                        channel_types: [0],
+                    }]
+                  }, Sinvite.guild.id);
 
                 let confirmed=false;
                 let count = 0;
-                while (count<10 && confirmed==false) {
-                    await timer(3000);//30000 for 30 seconds -> 5m total delay
+                while (count<60 && confirmed==false) {
+                    await timer(5000);//30000 for 30 seconds -> 5m total delay
                     count++;
                     //console.log(`${5-count/2} minutes remaining`);
                     if(client.database.awaitingServers.findIndex(isGuildId)==-1) confirmed = true
                 }
 
-                confirmed = true
-
                 if(!confirmed){
                     client.database.awaitingServers.splice(client.database.awaitingServers.findIndex(isGuildId), 1);
+                    await Sinvite.guild.commands.delete(reviewCommand.id, Sinvite.guild.id);
                     await interaction.message.edit({ components: [admissionROW] });
                     tempReply.delete()
                 } else {

@@ -1,6 +1,7 @@
 const { buttonList } = require('../interactions/buttons/buttons');
 const { modalList } = require('../interactions/modals/modals');
 const { selectMenuList } = require('../interactions/selectmenus/selectmenus');
+const reviewCOMMAND = require('../commands/review')
 
 module.exports = {
     name: 'interactionCreate',
@@ -8,6 +9,7 @@ module.exports = {
         
         if (interaction.isChatInputCommand() || interaction.isContextMenuCommand()) {
             const command = client.globalCommands.get(interaction.commandName) || client.guildCommands.get(interaction.commandName);
+            if(interaction.commandName=='review') reviewCOMMAND.execute(interaction, client)
             if (!command) return;
             
             try {
