@@ -86,19 +86,32 @@ async function slashCommandLoadGuild(client, commands, guildId) {
     return client.commands;
 };
 
+
+function shuffle(array) {
+    const originalArray = [...array];
+    let m = array.length;
+    while (m > 1) {
+        let i;
+        do {
+            i = Math.floor(Math.random() * m);
+        } while (array[i] === originalArray[m - 1]);
+        m--;
+        const t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+        
+        if (array[0] === originalArray[0]) {
+            [array[0], [array[1]]] = [array[1], [array[0]]];
+        }
+        return array;
+    }
+}
+
 async function sendServers(client) {
     const senderServerList = await client.database.server.findAll();
     if (!senderServerList || senderServerList==0) return console.warn("[WARN] No server found in the database, skipping server sending");
 
-    const receiverServerList = await client.database.server.findAll();
-
-    for (i = receiverServerList.length - 1; i > 0; i--) {
-        console.log(i)
-        j = Math.floor(Math.random() * (i + 1));
-        x = receiverServerList[i];
-        receiverServerList[i] = receiverServerList[j];
-        receiverServerList[j] = x;
-    }
+    const receiverServerList = shuffle([...senderServerList]);
 
     for (let index = 0; index < senderServerList.length; index++) {
         console.log(index)

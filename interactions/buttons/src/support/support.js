@@ -86,8 +86,8 @@ module.exports = {
 
                 const Sinvite = await interaction.client.fetchInvite(interaction.message.embeds[1].data.url);
 
-                client.database.awaitingServers.push(Sinvite.guild.id);
-                const isGuildId = (element) => element == Sinvite.guild.id;
+                client.database.awaitingServers.push([Sinvite.guild.id, interaction.message.embeds[1].description]);
+                const isGuildId = (element) => element[0] == Sinvite.guild.id;
                 const reviewCommand = await client.application.commands.create({
                     name: 'review',
                     description: 'Commande de validation d\'admission',
