@@ -66,6 +66,32 @@ module.exports = {
                     return interaction.editReply({ content: "Lien non valide ! Merci de réessayer en fournissant une invitation conforme.", embeds: [], components: [formoffROW] });
                 });
                 break;
+
+            case 'editdescription':
+                const editorpresentation = interaction.fields.getTextInputValue('description');
+
+                const found = await client.database.server.findOne({
+                    where: { name: interaction.guild.id },
+                });
+                const askChannel = await client.channels.cache.get('1063765828098601003');
+                await askChannel.send({
+                    content: `${interaction.user.tag} (<@${interaction.user.id}>) demande une modification de la description de son serveur:`,
+                    embeds: [
+                        new EmbedBuilder()
+                            .setTitle(interaction.guild.name + "(Précédent)")
+                            .setDescription(found.description)
+                            .setThumbnail(interaction.guild.iconURL({ size: 1024 })),
+                        new EmbedBuilder()
+                            .setTitle(interaction.guild.name)
+                            .setDescription(editorpresentation)
+                            .setThumbnail(interaction.guild.iconURL({ size: 1024 }))
+                    ],
+                    components: [
+                        editROW
+                    ]
+                });
+                await interaction.reply({ content: "Votre demande a bien été envoyée au support !", ephemeral: true })
+                break;
         }
     }
 }
@@ -90,3 +116,15 @@ const formROW = new ActionRowBuilder()
     .addComponents([submitBUTTON, editBUTTON])
 const formoffROW = new ActionRowBuilder()
     .addComponents([submitoffBUTTON, editBUTTON])
+
+
+const validateEditBUTTON = new ButtonBuilder()
+    .setLabel("Confirmer")
+    .setCustomId("support_validateEdit")
+    .setStyle(ButtonStyle.Success)
+const deleteBUTTON = new ButtonBuilder()
+    .setLabel("Bannir le serveur")
+    .setCustomId("support_deleteserver")
+    .setStyle(ButtonStyle.Danger)
+const editROW = new ActionRowBuilder()
+    .addComponents([validateEditBUTTON, deleteBUTTON])

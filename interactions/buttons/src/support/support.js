@@ -86,7 +86,6 @@ module.exports = {
                 const found = await client.database.server.findOne({
                     where: { name: Sinvite.guild.id },
                 });
-                console.log(found)
 
                 if(found && !found==0) return interaction.editReply({ content: "Ce serveur est déjà présent dans ma base de données" });
                 if(!staffIdList.includes(interaction.user.id)) return interaction.editReply({ content: "Vous n'avez pas la permission de faire cela !", ephemeral: true });

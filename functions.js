@@ -87,24 +87,14 @@ async function slashCommandLoadGuild(client, commands, guildId) {
 };
 
 
-function shuffle(array) {
-    const originalArray = [...array];
-    let m = array.length;
-    while (m > 1) {
-        let i;
-        do {
-            i = Math.floor(Math.random() * m);
-        } while (array[i] === originalArray[m - 1]);
-        m--;
-        const t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-        
-        if (array[0] === originalArray[0]) {
-            [array[0], [array[1]]] = [array[1], [array[0]]];
-        }
-        return array;
+function shuffle(items) {
+    for(var i = items.length; i-- > 1; ) {
+      var j = Math.floor(Math.random() * i);
+      var tmp = items[i];
+      items[i] = items[j];
+      items[j] = tmp;
     }
+    return items
 }
 
 async function sendServers(client) {
@@ -113,35 +103,34 @@ async function sendServers(client) {
 
     const receiverServerList = shuffle([...senderServerList]);
 
-    for (let index = 0; index < senderServerList.length; index++) {
-        const senderServer = senderServerList[index];
+    
+    senderServerList.forEach(async (senderServer, index) => {
         const receiverServerGuild = await client.guilds.cache.get(receiverServerList[index].name);
         if(!receiverServerGuild) {
-            console.client.logs.send(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
-            continue;
+            return console.client.logs.send(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
         }
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverServerList[index].channel);
         if(!receiverChannel) {
-            client.logs.send(`[SENDER] Receiver channel ${receiverServerList[index].name} (from server ${receiverServerGuild.name}) not found, skipping`);
-            continue;
+            return client.logs.send(`[SENDER] Receiver channel ${receiverServerList[index].name} (from server ${receiverServerGuild.name}) not found, skipping`);
         }
+        const sender = await client.guilds.cache.get(senderServer.name);
 
-        if(!receiverChannel.permissionsFor(await interaction.guild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return client.logs.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerList[index].invite} !` });
+        if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return client.logs.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerList[index].invite} !` });
         try{
-            receiverChannel.send({
+            await receiverChannel.send({
                 embeds: [
                     new EmbedBuilder()
-                    .setTitle(senderServer.guildName)
+                    .setTitle(sender.name)
                     .setURL(senderServer.invite)
                     .setDescription(senderServer.description)
+                    .setThumbnail(sender.iconURL({ size: 1024 }))
                 ]
             })
-        } catch {
-            client.logs.send(`[WARN] [SENDER] Was unable to send to channel ${receiverChannel.id} on ${receiverServerList[index].invite}`)
+        } catch(error) {
+            console.log(error)
+            return client.logs.send(`[WARN] [SENDER] Was unable to send to channel ${receiverChannel.id} on ${receiverServerList[index].invite}`)
         }
-    }
-    console.log("Sent servers")
-    return "Sent servers"
+    });
 }
 
 module.exports = { deploy_commands_global_and_guild, sendServers }
