@@ -125,7 +125,7 @@ module.exports = {
 
 const formMODAL = new ModalBuilder()
     .setCustomId("support_form")
-    .setTitle("AdShare - Formulaire de validation")
+    .setTitle("Avery - Formulaire de validation")
     .addComponents([
         new ActionRowBuilder()
             .addComponents([

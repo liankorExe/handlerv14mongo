@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ModalBuilder, PermissionsBitField, ChannelType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ModalBuilder, PermissionsBitField, ChannelType, ActionRowBuilder, TextInputBuilder, TextInputStyle, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 
 module.exports = {
@@ -6,14 +6,8 @@ module.exports = {
         .setName('config')
 		.setDescription('Configurer le bot')
         .addSubcommand(subcommand => subcommand
-            .setName("salon")
-            .setDescription("Choisir le salon où je dois envoyer les serveurs")
-            .addChannelOption(option => option
-                .setName("salon")
-                .setDescription("Le salon où envoyer")
-                .addChannelTypes(ChannelType.GuildText)
-                .setRequired(true)
-            )
+            .setName("description")
+            .setDescription("Demander la modification de la description de votre serveur")
         )
         .setDefaultMemberPermissions(0x8),
     async execute(interaction, client){
@@ -29,26 +23,22 @@ module.exports = {
         });
         switch(interaction.options.getSubcommand()){
             case 'salon':
-                channel = interaction.options.getChannel('salon');
-                if(!channel.permissionsFor(await interaction.guild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return interaction.editReply({ content: "Je n'ai pas la permission d'écrire dans le salon indiqué !" });
-                if(!channel.permissionsFor(await interaction.guild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.CreateInstantInvite)) return interaction.editReply({ content: "Je n'ai pas la permission de créer une invitation dans le salon indiqué !" });
-                if(!channel.members.size >= 150) return interaction.editReply({ content: "Il faut que la majorité de vos utilisateurs aient la permission de voir ce salon !" });
-                found = await client.database.server.findOne({
-                    where: { name: interaction.guild.id },
+
+                const found = await client.database.server.findOne({
+                    where: { name: Sinvite.guild.id },
                 });
-                console.log(found);
-                if(found && !found==0) return interaction.editReply({ content: "Ce serveur est déjà présent dans la base de données" });
-                const invite = await interaction.guild.invites.create(channel);
-                await client.database.server.create({
-                    name: interaction.guild.id,
-                    guildName: interaction.guild.name,
-                    channel: channel.id,
-                    invite: invite.url,
-                    description: interaction.options.getString('description'),
-                    timestamp: Math.floor(new Date().getTime()/1000),
+                if(!found || found==0) return interaction.editReply({
+                    content: "Pour modifier la configuration du bot, vous devez d'abord le mettre en place sur [mon serveur support](https://discord.gg/4wcNDQvnxc)",
+                    components: [
+                        new ButtonBuilder()
+                            .setStyle(ButtonStyle.Link)
+                            .setLabel('Serveur support')
+                            .setEmoji("1063222940042281050")
+                            .setURL('https://discord.gg/4wcNDQvnxc')
+                    ]
                 });
-                await channel.send({ embeds: [setupEMBED] });
-                await interaction.editReply({ content: "AdShare a bien été configuré !" })
+                await interaction.showModal(editdescFORM);
+                break;
         }
 
     }
@@ -59,6 +49,20 @@ const noPermEMBED = new EmbedBuilder()
     .setDescription("Désolé, mais vous ne possédez pas la permission `Administrateur`, requise pour effectuer cette action.")
     .setColor("#85ca62")
 
-const setupEMBED = new EmbedBuilder()
-    .setTitle("AdShare")
-    .setDescription("AdShare a été configuré pour envoyer les serveurs dans ce salon !\n[Inviter AdShare](https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0)")
+const editdescFORM = new ModalBuilder()
+    .setCustomId('support_editdescription')
+    .setTitle('Avery - Modifier la description')
+    .addComponents([
+        new ActionRowBuilder()
+            .setComponents(
+                new TextInputBuilder()
+                    .setCustomId('description')
+                    .setLabel('Nouvelle description')
+                    .setMinLength(70)
+                    .setMaxLength(400)
+                    .setPlaceholder('La nouvelle description sera validée ou non par l\'équipe du bot.\nTout troll sera sanctionné.')
+                    .setRequired(true)
+                    .setStyle(TextInputStyle.Paragraph)
+                    .setValue()
+            )
+    ])
