@@ -79,26 +79,23 @@ module.exports = {
                 })
                 break;
             case 'admission-confirm':
-                await interaction.deferReply()
+                await interaction.deferReply();
+
+                const Sinvite = await interaction.client.fetchInvite(interaction.message.embeds[1].data.url);
+
+                const found = await client.database.server.findOne({
+                    where: { name: Sinvite.guild.id },
+                });
+                console.log(found)
+
+                if(found && !found==0) return interaction.editReply({ content: "Ce serveur est déjà présent dans ma base de données" });
                 if(!staffIdList.includes(interaction.user.id)) return interaction.editReply({ content: "Vous n'avez pas la permission de faire cela !", ephemeral: true });
                 tempReply = await interaction.editReply({ content: `<@${interaction.user.id}> va valider cette admission dans les 5 prochaines minutes !` });
                 await interaction.message.edit({ components: [loadingadmissionROW] });
 
-                const Sinvite = await interaction.client.fetchInvite(interaction.message.embeds[1].data.url);
-
                 client.database.awaitingServers.push([Sinvite.guild.id, interaction.message.embeds[1].description]);
                 const isGuildId = (element) => element[0] == Sinvite.guild.id;
-                const reviewCommand = await client.application.commands.create({
-                    name: 'review',
-                    description: 'Commande de validation d\'admission',
-                    options: [{
-                        type: 7,
-                        name: "channel",
-                        description: "Salon où envoyer les messages du bot",
-                        required: true,
-                        channel_types: [0],
-                    }]
-                  }, Sinvite.guild.id);
+                const reviewCommand = await client.application.commands.create(rawReviewCommand, Sinvite.guild.id);
 
                 let confirmed=false;
                 let count = 0;
@@ -192,3 +189,41 @@ const doneadmissionROW = new ActionRowBuilder()
             .setLabel('Fermer le ticket')
             .setStyle(ButtonStyle.Danger)
     ])
+
+const rawReviewCommand = {
+    name: 'review',
+    description: 'Commande de validation d\'admission',
+    options: [
+        {
+            type: 7,
+            name: "channel",
+            description: "Salon où envoyer les messages du bot",
+            required: true,
+            channel_types: [0],
+        },
+        {
+            name: "language",
+            description: "Langage du serveur",
+            type: 3,
+            required: true,
+            choices: [
+                {
+                    name: "🇫🇷 Français",
+                    value: "fr"
+                },
+                {
+                    name: "🇬🇧 Anglais/Américain",
+                    value: "en-US"
+                },
+                {
+                    name: "🇩🇪 Allemand",
+                    value: "de"
+                },
+                {
+                    name: "🇪🇸 Espagnol",
+                    value: "es-ES"
+                },
+            ]
+        }
+        ]
+  }

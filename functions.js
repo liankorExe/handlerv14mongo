@@ -1,7 +1,7 @@
 const { REST } = require('@discordjs/rest');
 const { Routes } = require('discord-api-types/v10');
 const { token, clientId } = require('./config.json');
-const { Collection, EmbedBuilder } = require('discord.js');
+const { Collection, EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fs = require('fs');
 const rest = new REST({ version: '10' }).setToken(token);
 
@@ -114,18 +114,19 @@ async function sendServers(client) {
     const receiverServerList = shuffle([...senderServerList]);
 
     for (let index = 0; index < senderServerList.length; index++) {
-        console.log(index)
         const senderServer = senderServerList[index];
         const receiverServerGuild = await client.guilds.cache.get(receiverServerList[index].name);
         if(!receiverServerGuild) {
-            console.warn(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
+            console.client.logs.send(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
             continue;
         }
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverServerList[index].channel);
-        if(!receiverServerGuild) {
-            console.warn(`[SENDER] Receiver channel ${receiverServerList[index].name} (from server ${receiverServerGuild.name}) not found, skipping`);
+        if(!receiverChannel) {
+            client.logs.send(`[SENDER] Receiver channel ${receiverServerList[index].name} (from server ${receiverServerGuild.name}) not found, skipping`);
             continue;
         }
+
+        if(!receiverChannel.permissionsFor(await interaction.guild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return client.logs.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerList[index].invite} !` });
         try{
             receiverChannel.send({
                 embeds: [
@@ -136,7 +137,7 @@ async function sendServers(client) {
                 ]
             })
         } catch {
-            console.warn(`[WARN] [SENDER] Was unable to send to channel ${receiverChannel.id} (from server ${receiverServerGuild.name})`)
+            client.logs.send(`[WARN] [SENDER] Was unable to send to channel ${receiverChannel.id} on ${receiverServerList[index].invite}`)
         }
     }
     console.log("Sent servers")

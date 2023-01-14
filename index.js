@@ -24,6 +24,7 @@ const serverdb = sequelize.define('server', {
 	},
 	channel: Sequelize.STRING,
 	invite: Sequelize.STRING,
+	locale: Sequelize.STRING,
 	description: Sequelize.STRING,
 });
 
