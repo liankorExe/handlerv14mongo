@@ -24,12 +24,12 @@ const ticketsupportRow = new ActionRowBuilder()
     .addComponents([
         new ButtonBuilder()
             .setLabel("Ajouter le bot")
-            .setEmoji("➕")
+            .setEmoji("1063222105543557170")
             .setStyle(ButtonStyle.Link)
-            .setURL("https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0"),
+            .setURL("https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=313345"),
         new ButtonBuilder()
             .setLabel("Formulaire")
-            .setEmoji("📜")
+            .setEmoji("1063222940042281050")
             .setStyle(ButtonStyle.Success)
             .setCustomId("support_form"),
     ]);

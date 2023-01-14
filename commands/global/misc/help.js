@@ -29,11 +29,11 @@ const helpROW = new ActionRowBuilder()
         new ButtonBuilder()
             .setLabel("Inviter le bot")
             .setStyle(ButtonStyle.Link)
-            .setEmoji("➕")
-            .setURL("https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0"),
+            .setEmoji("1063222105543557170")
+            .setURL("https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=313345"),
         new ButtonBuilder()
             .setLabel("Rejoindre le support")
             .setStyle(ButtonStyle.Link)
-            .setEmoji("🔗")
+            .setEmoji("1063222940042281050")
             .setURL("https://discord.gg/4wcNDQvnxc"),
-    ])
+    ]);

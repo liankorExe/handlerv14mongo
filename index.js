@@ -1,7 +1,7 @@
 const fs = require('fs');
 const Sequelize = require('sequelize');
-const { Client, GatewayIntentBits } = require("discord.js");
-const { token, sequelizeCredentials, guildId } = require('./config.json');
+const { Client, GatewayIntentBits, WebhookClient } = require("discord.js");
+const { token, sequelizeCredentials, guildId, logWebhook } = require('./config.json');
 const { deploy_commands_global_and_guild } = require('./functions.js');
 
 const client = new Client({
@@ -22,11 +22,9 @@ const serverdb = sequelize.define('server', {
 		type: Sequelize.STRING,
 		unique: true,
 	},
-	guildName: Sequelize.STRING,
 	channel: Sequelize.STRING,
 	invite: Sequelize.STRING,
 	description: Sequelize.STRING,
-	timestamp: Sequelize.STRING,
 });
 
 serverdb.sync()
@@ -35,6 +33,8 @@ client.database = {
     server: serverdb,
 	awaitingServers: []
 }
+
+client.logs = new WebhookClient({ url: logWebhook });
 
 const eventFiles = fs.readdirSync('./events').filter(file => file.endsWith('.js'));
 for (const file of eventFiles) {
