@@ -50,4 +50,12 @@ for (const file of eventFiles) {
 deploy_commands_global_and_guild(client, true, guildId);//true: will refresh slash commands
 
 
+process.on("unhandledRejection", (reason, p) => {
+    console.log(reason, p);
+});
+process.on("uncaughtException", (err, origin) => {
+    console.log(err, origin);
+});
+
+
 client.login(token);
