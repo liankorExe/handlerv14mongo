@@ -22,6 +22,7 @@ module.exports = {
             channel: channel.id,
             invite: invite.url,
             description: client.database.awaitingServers[servINDEX][1],
+            active: true,
         });
 
         client.database.awaitingServers.splice(servINDEX, 1);

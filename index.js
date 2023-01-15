@@ -26,6 +26,7 @@ const serverdb = sequelize.define('server', {
 	invite: Sequelize.STRING,
 	locale: Sequelize.STRING,
 	description: Sequelize.STRING,
+	active: Sequelize.BOOLEAN,
 });
 
 serverdb.sync()
