@@ -4,7 +4,7 @@ const { token, clientId } = require('./config.json');
 const { Collection, EmbedBuilder, PermissionsBitField } = require('discord.js');
 const fs = require('fs');
 const rest = new REST({ version: '10' }).setToken(token);
-
+const timer = ms => new Promise( res => setTimeout(res, ms));
 
 
 function deploy_commands_global_and_guild(client, loadcommands, guildId) {
@@ -105,6 +105,7 @@ async function sendServers(client) {
 
     
     senderServerList.forEach(async (senderServer, index) => {
+        timer(75)
         const receiverServerGuild = await client.guilds.cache.get(receiverServerList[index].name);
         if(!receiverServerGuild) {
             return console.client.logs.send(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
