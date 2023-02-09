@@ -1,7 +1,7 @@
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v10');
+const { Routes, ButtonStyle } = require('discord-api-types/v10');
 const { token, clientId } = require('./config.json');
-const { Collection, EmbedBuilder, PermissionsBitField } = require('discord.js');
+const { Collection, EmbedBuilder, PermissionsBitField, ButtonBuilder } = require('discord.js');
 const fs = require('fs');
 const rest = new REST({ version: '10' }).setToken(token);
 const timer = ms => new Promise( res => setTimeout(res, ms));
@@ -105,7 +105,7 @@ async function sendServers(client) {
 
     
     senderServerList.forEach(async (senderServer, index) => {
-        timer(75)
+        //timer(75)
         const receiverServerGuild = await client.guilds.cache.get(receiverServerList[index].name);
         if(!receiverServerGuild) {
             return console.client.logs.send(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
@@ -125,6 +125,13 @@ async function sendServers(client) {
                     .setURL(senderServer.invite)
                     .setDescription(senderServer.description)
                     .setThumbnail(sender.iconURL({ size: 1024 }))
+                ],
+                components: [
+                    new ButtonBuilder()
+                        .setLabel('Rejoindre le serveur')
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(senderServer.invite)
+                        .setEmoji('1063501870540275782')
                 ]
             })
         } catch(error) {
