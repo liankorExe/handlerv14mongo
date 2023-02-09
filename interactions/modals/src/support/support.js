@@ -20,7 +20,9 @@ module.exports = {
                                 .setColor("#85ca62")
                         ]
                     });
-                    if(!client.guilds.cache.has(Sinvite.guild.id)) return interaction.editReply({ content: `Merci de [m'ajouter](https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0) à ${Sinvite.guild.name} avant de remplir le formulaire !` })
+                    if(!client.guilds.cache.has(Sinvite.guild.id)) return interaction.editReply({ content: `Merci de [m'ajouter](https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0) à ${Sinvite.guild.name} avant de remplir le formulaire !` });
+                    const Gowner = await Sinvite.guild.fetchOwner();
+                    if(interaction.user.id!=Gowner.id) return interaction.editReply({ content: `Vous n'êtes pas propriétaire de [${Sinvite.guild.name}](${Sinvite.url}) !` })
                     const servinfoEMBED = new EmbedBuilder()
                         .setTitle(Sinvite.guild.name)
                         .setURL(invite)
@@ -52,6 +54,9 @@ module.exports = {
                                 .setColor("#85ca62")
                         ]
                     });
+                    const Gowner = await Sinvite.guild.fetchOwner();
+                    if(interaction.user.id!=Gowner.id) return interaction.editReply({ content: `Vous n'êtes pas propriétaire de [${Sinvite.guild.name}](${Sinvite.url}) !` });
+                    if(!client.guilds.cache.has(Sinvite.guild.id)) return interaction.editReply({ content: `Merci de [m'ajouter](https://discord.com/oauth2/authorize?client_id=1061744784886206536&scope=bot&permissions=0) à ${Sinvite.guild.name} avant de remplir le formulaire !` });
                     const servinfoEMBED = new EmbedBuilder()
                         .setTitle(Sinvite.guild.name)
                         .setURL(editinvite)
@@ -63,6 +68,7 @@ module.exports = {
                         components: [formROW],
                     });
                 }).catch(error => {
+                    console.log(error)
                     return interaction.editReply({ content: "Lien non valide ! Merci de réessayer en fournissant une invitation conforme.", embeds: [], components: [formoffROW] });
                 });
                 break;
@@ -123,7 +129,7 @@ const validateEditBUTTON = new ButtonBuilder()
     .setCustomId("support_validateEdit")
     .setStyle(ButtonStyle.Success)
 const deleteBUTTON = new ButtonBuilder()
-    .setLabel("Bannir le serveur")
+    .setLabel("Supprimer le serveur")
     .setCustomId("support_deleteserver")
     .setStyle(ButtonStyle.Danger)
 const editROW = new ActionRowBuilder()

@@ -33,25 +33,14 @@ module.exports = {
             ephemeral: true
         });
 
-        const editFORM = new ModalBuilder()
-            .setCustomId('support_editdescription')
-            .setTitle('Avery - Modifier la configuration')
-            .addComponents([
-                new ActionRowBuilder()
-                    .setComponents([
-                        new TextInputBuilder()
-                            .setCustomId('description')
-                            .setLabel('Description')
-                            .setMinLength(70)
-                            .setMaxLength(400)
-                            .setPlaceholder('La nouvelle description sera validée ou non par l\'équipe du bot.\nTout troll sera sanctionné.')
-                            .setRequired(true)
-                            .setStyle(TextInputStyle.Paragraph)
-                            .setValue(found.description)
-                    ]),
-            ])
-
-        await interaction.showModal(editFORM);
+        await interaction.reply({
+            embeds: [configEMBED],
+            components: [
+                found.activated ? deactivateBTN : reactivateBTN,
+                configROW2,
+            ],
+            ephemeral: true
+        });
     }
 }
 
@@ -59,3 +48,25 @@ const noPermEMBED = new EmbedBuilder()
     .setTitle("Erreur !")
     .setDescription("Désolé, mais vous ne possédez pas la permission `Administrateur`, requise pour effectuer cette action.")
     .setColor("#85ca62")
+
+const configEMBED = new EmbedBuilder()
+    .setTitle('Configuration')
+    .setColor("#85ca62")
+
+const deactivateBTN = new ButtonBuilder()
+    .setCustomId('config_deactivate')
+    .setLabel('Désactiver le bot')
+    .setStyle(ButtonStyle.Danger)
+const reactivateBTN = new ButtonBuilder()
+    .setCustomId('config_reactivate')
+    .setLabel('Réactiver le bot')
+    .setStyle(ButtonStyle.Success)
+
+
+const editformBTN = new ButtonBuilder()
+    .setCustomId('config_editform')
+    .setLabel('Modifier la publicité')
+const configROW2 = new ActionRowBuilder()
+    .setComponents([
+        editformBTN
+    ])
