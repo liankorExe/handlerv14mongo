@@ -99,7 +99,7 @@ function shuffle(items) {
 }
 
 async function sendServers(client) {
-    const senderServerList = await client.database.server.findAll();
+    const senderServerList = await client.database.server.findAll({ where: { activated: true }});
     if (!senderServerList || senderServerList==0) return console.warn("[WARN] No server found in the database, skipping server sending");
 
     const receiverServerList = shuffle([...senderServerList]);
@@ -109,7 +109,7 @@ async function sendServers(client) {
         //timer(75)
         const receiverServerGuild = await client.guilds.cache.get(receiverServerList[index].name);
         if(!receiverServerGuild) {
-            return console.client.logs.send(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
+            return client.logs.send(`[SENDER] Receiver server ${receiverServerGuild.name} not found, skipping`);
         }
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverServerList[index].channel);
         if(!receiverChannel) {
