@@ -15,6 +15,7 @@ function deploy_commands_global_and_guild(client, loadcommands, guildId) {
     const commands = [];
     client.globalCommands = new Collection();
     client.help = ""
+    
     const commandCategories = fs.readdirSync('./commands/global').filter(file => !file.includes('.'));
     for (const category of commandCategories) {
         const commandFiles = fs.readdirSync(`./commands/global/${category}`).filter(file => file.endsWith('.js'));
@@ -36,7 +37,7 @@ function deploy_commands_global_and_guild(client, loadcommands, guildId) {
 
 
 
-    guildCommands = [];
+    const guildCommands = [];
     client.guildCommands = new Collection();
 
     const guildCommandCategories = fs.readdirSync('./commands/support').filter(file => !file.includes('.'));
