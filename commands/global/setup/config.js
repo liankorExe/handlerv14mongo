@@ -24,11 +24,13 @@ module.exports = {
         if(!found || found==0) return interaction.reply({
             content: "Pour modifier la configuration du bot, vous devez d'abord le mettre en place sur [mon serveur support](https://discord.gg/4wcNDQvnxc)",
             components: [
-                new ButtonBuilder()
-                    .setStyle(ButtonStyle.Link)
-                    .setLabel('Serveur support')
-                    .setEmoji("1063222940042281050")
-                    .setURL('https://discord.gg/4wcNDQvnxc')
+                new ActionRowBuilder().setComponents([
+                    new ButtonBuilder()
+                        .setStyle(ButtonStyle.Link)
+                        .setLabel('Serveur support')
+                        .setEmoji("1063222940042281050")
+                        .setURL('https://discord.gg/4wcNDQvnxc')
+                ])
             ],
             ephemeral: true
         });
@@ -36,7 +38,7 @@ module.exports = {
         await interaction.reply({
             embeds: [configEMBED],
             components: [
-                found.activated ? deactivateBTN : reactivateBTN,
+                new ActionRowBuilder().setComponents([found.activated ? deactivateBTN : reactivateBTN]),
                 configROW2,
             ],
             ephemeral: true
