@@ -10,6 +10,7 @@ client.interactionManager = {
     buttons: new Collection(),
     selectMenus: new Collection(),
     modals: new Collection(),
+    commands: new Collection(),
 };
 
 module.exports = client;
