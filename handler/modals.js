@@ -6,7 +6,7 @@ table.setHeading('Modals', 'Stats').setBorder('|', '=', "0", "0");
 
 module.exports = (client) => {
     fs.readdirSync('./interactions/modals/').filter((file) => file.endsWith('.js')).forEach((file) => {
-        const modal = require(`../modals/${file}`);
+        const modal = require(`../interactions/modals/${file}`);
         client.interactionManager.modals.set(modal.id, modal);
         table.addRow(modal.id, '✅');
     })

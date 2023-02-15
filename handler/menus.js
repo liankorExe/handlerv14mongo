@@ -6,7 +6,7 @@ table.setHeading('Menus', 'Stats').setBorder('|', '=', "0", "0");
 
 module.exports = (client) => {
     fs.readdirSync('./interactions/menus/').filter((file) => file.endsWith('.js')).forEach((file) => {
-        const menu = require(`../menus/${file}`);
+        const menu = require(`../interactions/menus/${file}`);
         client.interactionManager.selectMenus.set(menu.id, menu);
         table.addRow(menu.id, '✅');
     });
