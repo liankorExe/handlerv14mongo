@@ -1,3 +1,0 @@
-selectMenuList = {}
-
-module.exports = { selectMenuList }
