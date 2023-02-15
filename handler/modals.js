@@ -10,5 +10,5 @@ module.exports = (client) => {
         client.interactionManager.modals.set(modal.id, modal)
         table.addRow(modal.id, '✅')
     })
-    console.log(chalk.cyanBright(table.toString()))
+    console.log(chalk.blue(table.toString()))
 };

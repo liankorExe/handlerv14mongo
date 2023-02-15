@@ -10,5 +10,5 @@ module.exports = (client) => {
         client.interactionManager.menus.set(menus.id, menus)
         table.addRow(menus.id, '✅')
     })
-    console.log(chalk.cyanBright(table.toString()))
+    console.log(chalk.yellow(table.toString()))
 };
