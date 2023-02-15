@@ -3,8 +3,8 @@ const client = require('..');
 client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
 
-    const modal = client.interactionManager.commands.get(interaction.commandName);
-    if (!modal) return;
+    const command = client.interactionManager.commands.get(interaction.commandName);
+    if (!command) return;
 
     try {
         await command.run(client, interaction);
