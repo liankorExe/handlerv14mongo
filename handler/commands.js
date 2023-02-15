@@ -8,7 +8,7 @@ module.exports = (client) => {
     fs.readdirSync('./interactions/commands/').filter((file) => file.endsWith('.js')).forEach((file) => {
         const command = require(`../interactions/commands/${file}`);
         client.interactionManager.commands.set(command.data.name, command);
-        table.addRow(command.name, '✅');
+        table.addRow(command.data.name, '✅');
     })
     console.log(chalk.redBright(table.toString()));
 };
