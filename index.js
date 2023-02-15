@@ -9,8 +9,8 @@ client.interactionManager = {
 
 module.exports = client;
 
-fs.readdirSync('./handlers').forEach((handler) => {
-    require(`./handlers/${handler}`)(client)
+fs.readdirSync('./handler').forEach((handler) => {
+    require(`./handler/${handler}`)(client)
 });
 
 client.login(process.env.TOKEN)
