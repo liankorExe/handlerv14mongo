@@ -12,8 +12,8 @@ client.on('interactionCreate', async interaction => {
             if (!interaction.memberPermissions.has(PermissionsBitField.resolve(modal.permissions || []))) {
                 const perms = new EmbedBuilder()
                     .setDescription(`🚫 ${interaction.user}, Vous n'avez pas la permission \`${modal.permissions}\` pour utiliser ce modal !`)
-                    .setColor('Red')
-                return interaction.reply({ embeds: [perms], ephemeral: true })
+                    .setColor('Red');
+                return interaction.reply({ embeds: [perms], ephemeral: true });
             }
         }
         await modal.run(client, interaction);

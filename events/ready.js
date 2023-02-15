@@ -1,7 +1,6 @@
-const { Discord } = require('discord.js');
 const client = require('..');
-const chalk = require('chalk')
+const chalk = require('chalk');
 
-client.on('ready', async interaction => {
-    console.log(chalk.red(`${client.user.tag} prêt a pub ! 📌`))
+client.on('ready', async () => {
+    console.log(chalk.red(`${client.user.tag} prêt a pub ! 📌`));
 });

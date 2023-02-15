@@ -2,21 +2,21 @@ const { EmbedBuilder, PermissionsBitField } = require('discord.js');
 const client = require('..');
 
 client.on('interactionCreate', async interaction => {
-    if (!interaction.isSelectMenu()) return;
+    if (!interaction.isStringSelectMenu()) return;
 
-    const menus = client.interactionManager.menus.get(interaction.customId);
-    if (!menus) return;
+    const menu = client.interactionManager.selectMenus.get(interaction.customId);
+    if (!menu) return;
 
     try {
-        if (menus.permissions) {
-            if (!interaction.memberPermissions.has(PermissionsBitField.resolve(menus.permissions || []))) {
+        if (menu.permissions) {
+            if (!interaction.memberPermissions.has(PermissionsBitField.resolve(menu.permissions || []))) {
                 const perms = new EmbedBuilder()
-                    .setDescription(`🚫 ${interaction.user}, Vous n'avez pas la permission \`${menus.permissions}\` pour utiliser ce selectMenu !`)
-                    .setColor('Red')
-                return interaction.reply({ embeds: [perms], ephemeral: true })
+                    .setDescription(`🚫 ${interaction.user}, Vous n'avez pas la permission \`${menu.permissions}\` pour utiliser ce selectMenu !`)
+                    .setColor('Red');
+                return interaction.reply({ embeds: [perms], ephemeral: true });
             }
         }
-        await menus.run(client, interaction);
+        await menu.run(client, interaction);
     } catch (error) {
         console.log(error);
     }
