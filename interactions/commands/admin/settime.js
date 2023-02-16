@@ -6,9 +6,8 @@ module.exports = {
     description: "Choisis l'heure à la quelle le bot envoie votre pub",
     options: [],
     run: async (client, interaction) => {
-        console.log(interaction)
-        let timeData = timeModel.findOne({ searchInDb: "adshare" })
-        if (timeData) {
+        let timeData = await timeModel.findOne({ searchInDb: "adshare" })
+        if (!timeData) {
             await timeModel.create({
                 searchInDb: "adshare",
                 deux: [],
@@ -19,8 +18,27 @@ module.exports = {
                 vingtquatre: []
             })
         }
-        timeData = timeModel.findOne({ searchInDb: "adshare" })
+        timeData = await timeModel.findOne({ searchInDb: "adshare" })
 
+        const hoursMap = {
+            "2H": timeData.deux,
+            "4H": timeData.quatre,
+            "6H": timeData.six,
+            "8H": timeData.huit,
+            "12H": timeData.douze,
+            "24H": timeData.vingtquatre
+        };
+
+        const findGuildHour = (guildId) => {
+            for (const [hour, guildIds] of Object.entries(hoursMap)) {
+                if (guildIds.includes(guildId)) {
+                    return hour;
+                }
+            }
+            return null;
+        }
+
+        const guildHour = findGuildHour(interaction.guild.id);
         const selectheuresmenu = new ActionRowBuilder()
             .addComponents(
                 new StringSelectMenuBuilder()
@@ -54,10 +72,10 @@ module.exports = {
                     ),
             );
         const embedTime = new EmbedBuilder()
-            .setTitle(`Set Time`)
-            .setDescription(`\`\`\` \`\`\`\n\nVoici la liste des heures de pub\n\n**Pour choisir une heure il vous suffit de choisir votre heure à l'aide du menu déroulant**`)
+            .setTitle(`⌛ Set Time`)
+            .setDescription(`\`\`\` \`\`\`\n\n> Voici la liste des heures de pub\nVous êtes actuellement dans la liste des **${guildHour}**\n\n**Pour choisir une heure il vous suffit de choisir votre heure à l'aide du menu déroulant**`)
             .setColor(process.env.COLOR)
 
-        interaction.channel.send({ embeds: [embedTime], components: [selectheuresmenu] })
+        interaction.reply({ embeds: [embedTime], components: [selectheuresmenu], allowedMentions: { parse: [] } })
     }
 };
