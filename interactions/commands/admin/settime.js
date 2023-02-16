@@ -3,7 +3,7 @@ const timeModel = require("../../../schemas/timeArrayTable")
 
 module.exports = {
     name: "settime",
-    description: "Choisis l'heure à la quelle le bot envoie votre pub",
+    description: "Choisis le délai d'envoi de votre pub",
     options: [],
     run: async (client, interaction) => {
         let timeData = await timeModel.findOne({ searchInDb: "adshare" })
@@ -43,7 +43,7 @@ module.exports = {
             .addComponents(
                 new StringSelectMenuBuilder()
                     .setCustomId('selecthours')
-                    .setPlaceholder('Choisis ton / tes heure(s)')
+                    .setPlaceholder('Choisis le délai')
                     .addOptions(
                         {
                             label: '2H',
