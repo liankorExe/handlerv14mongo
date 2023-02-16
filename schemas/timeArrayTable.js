@@ -1,6 +1,7 @@
 const mongoose = require("mongoose")
 
 const timeArrayTable = new mongoose.Schema({
+    searchInDb: { type: String },
     deux: { type: Array },
     quatre: { type: Array },
     six: { type: Array },

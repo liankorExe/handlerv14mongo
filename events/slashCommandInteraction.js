@@ -4,8 +4,7 @@ client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
 
     const command = client.interactionManager.commands.get(interaction.commandName);
-    if (!command) return;
-
+    if (!command) return client.interactionManager.commands.delete(interaction.commandName);
     try {
         await command.run(client, interaction);
     } catch (error) {
