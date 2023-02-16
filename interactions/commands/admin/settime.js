@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js")
+const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js")
 const timeModel = require("../../../schemas/timeArrayTable")
 
 module.exports = {

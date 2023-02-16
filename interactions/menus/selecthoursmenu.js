@@ -66,55 +66,36 @@ module.exports = {
         switch (timeOption) {
             case 'deux':
                 checkAndAddId(timeData.deux, interaction.guild.id)
-                const msgdeux = await interaction.reply({ content: `Vous venez de choisir de recevoir les pubs toutes les 2H !`, fetchReply: true })
-                setTimeout(() => {
-                    msgdeux.delete()
-                }, 2000);
+                const msgdeux = await interaction.reply({ content: `Vous avez choisi de recevoir les pubs toutes les 2H !`, fetchReply: true, ephemeral: true });
                 updateInte()
                 break;
             case 'quatre':
                 checkAndAddId(timeData.quatre, interaction.guild.id)
-                const msgquatre = await interaction.reply({ content: `Vous venez de choisir de recevoir les pubs toutes les 4H !`, fetchReply: true })
-                setTimeout(() => {
-                    msgquatre.delete()
-                }, 2000);
+                const msgquatre = await interaction.reply({ content: `Vous avez choisi de recevoir les pubs toutes les 4H !`, fetchReply: true, ephemeral: true });
                 updateInte()
                 break;
             case 'six':
                 checkAndAddId(timeData.six, interaction.guild.id)
-                const msgsix = await interaction.reply({ content: `Vous venez de choisir de recevoir les pubs toutes les 6H !`, fetchReply: true })
-                setTimeout(() => {
-                    msgsix.delete()
-                }, 2000);
+                const msgsix = await interaction.reply({ content: `Vous avez choisi de recevoir les pubs toutes les 6H !`, fetchReply: true, ephemeral: true });
                 updateInte()
                 break;
             case 'huit':
                 checkAndAddId(timeData.huit, interaction.guild.id)
-                const msghuit = await interaction.reply({ content: `Vous venez de choisir de recevoir les pubs toutes les 8H !`, fetchReply: true })
-                setTimeout(() => {
-                    msghuit.delete()
-                }, 2000);
+                const msghuit = await interaction.reply({ content: `Vous avez choisi de recevoir les pubs toutes les 8H !`, fetchReply: true, ephemeral: true });
                 updateInte()
                 break;
             case 'douze':
                 checkAndAddId(timeData.douze, interaction.guild.id)
-                const msgdouze = await interaction.reply({ content: `Vous venez de choisir de recevoir les pubs toutes les 12H !`, fetchReply: true })
-                setTimeout(() => {
-                    msgdouze.delete()
-                }, 2000);
+                const msgdouze = await interaction.reply({ content: `Vous avez choisi de recevoir les pubs toutes les 12H !`, fetchReply: true, ephemeral: true });
                 updateInte()
                 break;
             case 'vingtquatre':
                 checkAndAddId(timeData.vingtquatre, interaction.guild.id)
-                const msgvingtquatre = await interaction.reply({ content: `Vous venez de choisir de recevoir les pubs toutes les 24H !`, fetchReply: true })
-                setTimeout(() => {
-                    msgvingtquatre.delete()
-                }, 2000);
+                const msgvingtquatre = await interaction.reply({ content: `Vous avez choisi de recevoir les pubs toutes les 24H !`, fetchReply: true, ephemeral: true });
                 updateInte()
                 break;
             default:
                 console.log(`Option inconnue : ${timeOption}`);
         }
-
     }
 };
