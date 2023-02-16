@@ -1,4 +1,4 @@
-const { REST, Routes } = require('discord.js');
+const { REST, Routes, PermissionsBitField } = require('discord.js');
 const fs = require('fs');
 const chalk = require('chalk');
 const AsciiTable = require('ascii-table');
@@ -17,6 +17,7 @@ module.exports = async (client) => {
                 name: slashCommand.name,
                 description: slashCommand.description,
                 options: slashCommand.options ? slashCommand.options : null,
+                default_member_permissions: slashCommand.default_member_permissions ? PermissionsBitField.resolve(slashCommand.default_member_permissions).toString() : null
             });
             if (slashCommand.name) {
                 client.interactionManager.commands.set(slashCommand.name, slashCommand);

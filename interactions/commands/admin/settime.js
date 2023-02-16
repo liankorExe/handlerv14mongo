@@ -5,6 +5,7 @@ module.exports = {
     name: "settime",
     description: "Choisis le délai d'envoi de votre pub",
     options: [],
+    default_member_permissions: "Administrator",
     run: async (client, interaction) => {
         let timeData = await timeModel.findOne({ searchInDb: "adshare" })
         if (!timeData) {
