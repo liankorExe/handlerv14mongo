@@ -1,20 +1,34 @@
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js")
-const serverModel = require("../../../schemas/serverSettings")
+const timeModel = require("../../../schemas/timeArrayTable")
 
 module.exports = {
     name: "general",
-    description: "Choisis le délai d'envoi de votre pub",
+    description: "Choisis le salon pour le system de general",
     options: [],
     default_member_permissions: "Administrator",
     run: async (client, interaction) => {
-        let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
-        if (!serverSettings) await serverModel.create({
-            serverID: interaction.guild.id,
-            description: "null",
-            salonpub: "null"
-        });
+        const timeData = await timeModel.findOne({ searchInDb: "adshare" });
+        if (interaction.guild.memberCount < 200) {
+            return interaction.reply({ content: `Votre serveur a besoin d'avoir minimum 200 membres !`, ephemeral: true })
+        }
+        const selectGeneralmenu = new ActionRowBuilder()
+            .addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId('selectgeneralmenu')
+                    .setPlaceholder('Choisis ton option')
+                    .addOptions(
+                        {
+                            label: 'Salon',
+                            emoji: `🏷`,
+                            value: 'salon',
+                        },
+                    ),
+            );
+        const embeGeneral = new EmbedBuilder()
+            .setTitle(`Général`)
+            .setColor(porcess.env.COLOR)
+            .setDescription(`> Il y a actuellement **${timeData.general.length}** serveur inscrit dans la catégorie général.`)
 
-        serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
-
+        interaction.channel.send({ embeds: [embeGeneral], components: [selectGeneralmenu] })
     }
 };

@@ -10,7 +10,8 @@ module.exports = {
         if (!serverSettings) await serverModel.create({
             serverID: interaction.guild.id,
             description: "null",
-            salonpub: "null"
+            salonpub: "null",
+            salongeneral: "null"
         });
 
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });

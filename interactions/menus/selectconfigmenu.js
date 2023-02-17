@@ -11,7 +11,8 @@ module.exports = {
             await serverModel.create({
                 serverID: interaction.guild.id,
                 description: "null",
-                salonpub: "null"
+                salonpub: "null",
+                salongeneral: "null"
             })
         }
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
@@ -80,7 +81,7 @@ module.exports = {
                     interaction.message.edit({ embeds: interaction.message.embeds });
                 })
                 .catch(console.error);
-        } else if(val=='delai'){
+        } else if (val == 'delai') {
             await interaction.deferUpdate();
             await interaction.message.edit();
             await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
@@ -104,7 +105,7 @@ module.exports = {
                     interaction.message.embeds[0].fields[1].value = await findGuildHour(interaction.guild.id);
                     interaction.editReply({ embeds: interaction.message.embeds });
 
-                    
+
                 })
                 .catch(console.error);
         }
