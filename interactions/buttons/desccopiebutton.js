@@ -15,6 +15,6 @@ module.exports = {
 
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
-        interaction.channel.send({ content: `\`\`\`${serverSettings.description}\`\`\`` })
+        interaction.channel.send({ content: `\`\`\`\n${serverSettings.description}\`\`\`` })
     }
 };
