@@ -7,7 +7,8 @@ const timeArrayTable = new mongoose.Schema({
     six: { type: Array },
     huit: { type: Array },
     douze: { type: Array },
-    vingtquatre: { type: Array }
+    vingtquatre: { type: Array },
+    general: { type: Array }
 })
 
 const model = mongoose.model("timeArrayTable", timeArrayTable)

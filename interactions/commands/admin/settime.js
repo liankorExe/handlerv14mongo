@@ -15,7 +15,8 @@ module.exports = {
             six: [],
             huit: [],
             douze: [],
-            vingtquatre: []
+            vingtquatre: [],
+            general: []
         });
 
         timeData = await timeModel.findOne({ searchInDb: "adshare" });
@@ -49,34 +50,34 @@ module.exports = {
 };
 
 const selectheuresmenu = new ActionRowBuilder()
-.addComponents(
-    new StringSelectMenuBuilder()
-        .setCustomId('selecthours')
-        .setPlaceholder('Choisis le délai')
-        .addOptions(
-            {
-                label: '2H',
-                value: 'deux',
-            },
-            {
-                label: '4H',
-                value: 'quatre',
-            },
-            {
-                label: '6H',
-                value: 'six',
-            },
-            {
-                label: '8H',
-                value: 'huit',
-            },
-            {
-                label: '12H',
-                value: 'douze',
-            },
-            {
-                label: '24H',
-                value: 'vingtquatre',
-            },
-        ),
-);
+    .addComponents(
+        new StringSelectMenuBuilder()
+            .setCustomId('selecthours')
+            .setPlaceholder('Choisis le délai')
+            .addOptions(
+                {
+                    label: '2H',
+                    value: 'deux',
+                },
+                {
+                    label: '4H',
+                    value: 'quatre',
+                },
+                {
+                    label: '6H',
+                    value: 'six',
+                },
+                {
+                    label: '8H',
+                    value: 'huit',
+                },
+                {
+                    label: '12H',
+                    value: 'douze',
+                },
+                {
+                    label: '24H',
+                    value: 'vingtquatre',
+                },
+            ),
+    );

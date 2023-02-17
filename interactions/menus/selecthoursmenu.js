@@ -13,7 +13,8 @@ module.exports = {
                 six: [],
                 huit: [],
                 douze: [],
-                vingtquatre: []
+                vingtquatre: [],
+                general: []
             })
         }
 

@@ -36,7 +36,7 @@ module.exports = {
                     interaction.message.edit({ embeds: interaction.message.embeds });
                 })
                 .catch(console.error);
-        } else if(val=="description"){
+        } else if (val == "description") {
             let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
             const descriptionMODAL = new ModalBuilder()
                 .setCustomId('configmodal_description')
@@ -53,7 +53,7 @@ module.exports = {
                                 .setStyle(TextInputStyle.Paragraph)
                         ])
                 ])
-            if(serverSettings.description!="null") descriptionMODAL.components[0].components[0].setValue(serverSettings.description)
+            if (serverSettings.description != "null") descriptionMODAL.components[0].components[0].setValue(serverSettings.description)
 
             await interaction.showModal(descriptionMODAL)
             const filter = (inter) => inter.customId === 'configmodal_description';
@@ -80,9 +80,9 @@ module.exports = {
 };
 
 const channelMENU = new ActionRowBuilder()
-.setComponents([
-    new ChannelSelectMenuBuilder()
-        .setCustomId('configselectmenuchannel')
-        .setChannelTypes(ChannelType.GuildText)
-        .setPlaceholder("Choisissez un salon")
-])
+    .setComponents([
+        new ChannelSelectMenuBuilder()
+            .setCustomId('configselectmenuchannel')
+            .setChannelTypes(ChannelType.GuildText)
+            .setPlaceholder("Choisissez un salon")
+    ])
