@@ -1,5 +1,6 @@
-const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js")
-const serverModel = require("../../../schemas/serverSettings")
+const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
+const serverModel = require("../../../schemas/serverSettings");
+const timeModel = require("../../../schemas/timeArrayTable");
 
 module.exports = {
     name: "config",
@@ -27,18 +28,43 @@ module.exports = {
                             value: 'salon',
                         },
                         {
+                            label: 'Délai',
+                            emoji: `🕐`,
+                            value: 'delai',
+                        },
+                        {
                             label: 'Description',
                             emoji: `📌`,
                             value: 'description',
                         },
                     ),
             );
+        let timeData = await timeModel.findOne({ searchInDb: "adshare" });
+        const hoursMap = {
+            "2H": timeData.deux,
+            "4H": timeData.quatre,
+            "6H": timeData.six,
+            "8H": timeData.huit,
+            "12H": timeData.douze,
+            "24H": timeData.vingtquatre
+        };
+        const findGuildHour = (guildId) => {
+            for (const [hour, guildIds] of Object.entries(hoursMap)) {
+                if (guildIds.includes(guildId)) {
+                    return hour;
+                }
+            }
+            return null;
+        };
+
+        const guildHour = findGuildHour(interaction.guild.id);
         const embedConfig = new EmbedBuilder()
             .setTitle(`⚙ Configuration`)
             .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}** *`)
             .addFields(
                 { name: `🏷 Salon`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>` },
-                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description}` }
+                { name: `🕐 Délai`, value: guildHour ?? "Non défini" },
+                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description}` },
             )
             .setColor(process.env.COLOR);
 
