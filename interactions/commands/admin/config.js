@@ -5,17 +5,16 @@ module.exports = {
     name: "config",
     description: "Choisis le délai d'envoi de votre pub",
     options: [],
-    default_member_permissions: "Administrator",
+    default_member_permissions: 0x8,
     run: async (client, interaction) => {
-        let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
-        if (!serverSettings) {
-            await serverModel.create({
-                serverID: interaction.guild.id,
-                description: "null",
-                salonpub: "null"
-            })
-        }
-        serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
+        let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
+        if (!serverSettings) await serverModel.create({
+            serverID: interaction.guild.id,
+            description: "null",
+            salonpub: "null"
+        });
+
+        serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         const selectconfigmenu = new ActionRowBuilder()
             .addComponents(
                 new StringSelectMenuBuilder()
@@ -41,8 +40,8 @@ module.exports = {
                 { name: `🏷 Salon`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>` },
                 { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description}` }
             )
-            .setColor(process.env.COLOR)
+            .setColor(process.env.COLOR);
 
-        interaction.reply({ embeds: [embedConfig], components: [selectconfigmenu], allowedMentions: { parse: [] } })
+        interaction.reply({ embeds: [embedConfig], components: [selectconfigmenu], allowedMentions: { parse: [] } });
     }
 };
