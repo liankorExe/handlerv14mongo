@@ -35,7 +35,7 @@ module.exports = {
                 if (channelFetched) {
                     const embedRefus = new EmbedBuilder()
                         .setTitle(`Description refusé`)
-                        .setDescription(`> Votre demande de description a été refusé pour la raison suivante : \n\`${raison}\`\n\n⚠️ *Vous n'avez pas respecté les conditions d'utilisations de Adshare Bot par conséquence votre description a été supprimé !*`)
+                        .setDescription(`> Votre demande de description a été refusé pour la raison suivante : \n\`${raison}\`\n\n⚠️ *Vous n'avez pas respecté les conditions d'utilisations de Adshare Bot par conséquence votre description a été supprimée !*`)
                         .setColor(process.env.COLOR)
                     channelFetched.send({ embeds: [embedRefus] })
                 }
