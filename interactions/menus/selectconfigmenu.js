@@ -40,6 +40,7 @@ module.exports = {
                 })
                 .catch(console.error);
         } else if (val == "description") {
+            await interaction.deferReply({ ephemeral: true });
             let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
             const descriptionMODAL = new ModalBuilder()
                 .setCustomId('configmodal_description')
@@ -81,6 +82,7 @@ module.exports = {
                 .catch(console.error);
         } else if(val=='delai'){
             await interaction.deferUpdate();
+            await interaction.message.edit();
             await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenudelay' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
