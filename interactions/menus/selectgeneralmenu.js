@@ -48,7 +48,7 @@ module.exports = {
         }
         if (val === "on") {
             if (timeData.general.includes(interaction.guild.id)) {
-                return interaction.reply({ content: `Vous avez déjà activer le system de général !`, ephemeral: true })
+                return interaction.reply({ content: `Vous avez déjà activé le system de général !`, ephemeral: true })
             }
             timeData.general.push(interaction.guild.id)
             timeData.save()
@@ -56,7 +56,7 @@ module.exports = {
         }
         if (val === "off") {
             if (!timeData.general.includes(interaction.guild.id)) {
-                return interaction.reply({ content: `Vous avez déjà désactiver le system de général !`, ephemeral: true })
+                return interaction.reply({ content: `Vous avez déjà désactivé le system de général !`, ephemeral: true })
             }
             const pos = timeData.general.indexOf(interaction.guild.id)
             timeData.general.splice(pos, 1)
