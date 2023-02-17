@@ -15,7 +15,7 @@ module.exports = {
             .addComponents(
                 new ButtonBuilder()
                     .setCustomId('infogeneralbutton')
-                    .setLabel('?')
+                    .setEmoji(`❔`)
                     .setStyle(ButtonStyle.Secondary),
             );
         const selectGeneralmenu = new ActionRowBuilder()
@@ -44,7 +44,7 @@ module.exports = {
         const embeGeneral = new EmbedBuilder()
             .setTitle(`Général`)
             .setColor(process.env.COLOR)
-            .setDescription(`> Il y a actuellement **${timeData.general.length}** serveur inscrit dans la catégorie général.`)
+            .setDescription(`> Il y a actuellement **${timeData.general.length}** serveur(s) inscrit dans la catégorie général.`)
 
         interaction.reply({ embeds: [embeGeneral], components: [selectGeneralmenu, buttonInfo] })
     }
