@@ -8,7 +8,7 @@ module.exports = {
     default_member_permissions: "Administrator",
     run: async (client, interaction) => {
         const timeData = await timeModel.findOne({ searchInDb: "adshare" });
-        if (interaction.guild.memberCount < 2) {
+        if (interaction.guild.memberCount < 200) {
             return interaction.reply({ content: `Votre serveur a besoin d'avoir minimum 200 membres !`, ephemeral: true })
         }
         const buttonInfo = new ActionRowBuilder()
