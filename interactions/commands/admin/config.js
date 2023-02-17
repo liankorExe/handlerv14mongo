@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder } = require("discord.js");
 const serverModel = require("../../../schemas/serverSettings");
 const timeModel = require("../../../schemas/timeArrayTable");
 
@@ -39,7 +39,19 @@ module.exports = {
                         },
                     ),
             );
-        let timeData = await timeModel.findOne({ searchInDb: "adshare" });
+        
+        const buttonsOptions = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId('desc-copier')
+                    .setLabel('Copier')
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('desc-apercu')
+                    .setLabel('Aperçu')
+                    .setStyle(ButtonStyle.Secondary),
+            )
+        const timeData = await timeModel.findOne({ searchInDb: "adshare" });
         const hoursMap = {
             "2H": timeData.deux,
             "4H": timeData.quatre,
@@ -68,6 +80,6 @@ module.exports = {
             )
             .setColor(process.env.COLOR);
 
-        interaction.reply({ embeds: [embedConfig], components: [selectconfigmenu], allowedMentions: { parse: [] } });
+        interaction.reply({ embeds: [embedConfig], components: [selectconfigmenu, buttonsOptions], allowedMentions: { parse: [] } });
     }
 };
