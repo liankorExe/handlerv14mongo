@@ -46,6 +46,6 @@ module.exports = {
             .setColor(process.env.COLOR)
             .setDescription(`> Il y a actuellement **${timeData.general.length}** serveur inscrit dans la catégorie général.`)
 
-        interaction.channel.send({ embeds: [embeGeneral], components: [selectGeneralmenu, buttonInfo] })
+        interaction.reply({ embeds: [embeGeneral], components: [selectGeneralmenu, buttonInfo] })
     }
 };
