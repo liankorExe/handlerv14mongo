@@ -5,7 +5,7 @@ module.exports = {
     name: "settime",
     description: "Choisis le délai d'envoi de votre pub",
     options: [],
-    default_member_permissions: 0x8,
+    default_member_permissions: "Administrator",
     run: async (client, interaction) => {
         let timeData = await timeModel.findOne({ searchInDb: "adshare" })
         if (!timeData) await timeModel.create({
@@ -19,6 +19,15 @@ module.exports = {
         });
 
         timeData = await timeModel.findOne({ searchInDb: "adshare" });
+
+        const hoursMap = {
+            "2H": timeData.deux,
+            "4H": timeData.quatre,
+            "6H": timeData.six,
+            "8H": timeData.huit,
+            "12H": timeData.douze,
+            "24H": timeData.vingtquatre
+        };
 
         const findGuildHour = (guildId) => {
             for (const [hour, guildIds] of Object.entries(hoursMap)) {
@@ -37,15 +46,6 @@ module.exports = {
 
         interaction.reply({ embeds: [embedTime], components: [selectheuresmenu], allowedMentions: { parse: [] } });
     }
-};
-
-const hoursMap = {
-    "2H": timeData.deux,
-    "4H": timeData.quatre,
-    "6H": timeData.six,
-    "8H": timeData.huit,
-    "12H": timeData.douze,
-    "24H": timeData.vingtquatre
 };
 
 const selectheuresmenu = new ActionRowBuilder()

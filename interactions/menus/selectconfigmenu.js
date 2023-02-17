@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, Discord } = require("discord.js")
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, Discord, ModalBuilder } = require("discord.js")
 const serverModel = require("../../schemas/timeArrayTable")
 module.exports = {
     id: 'configselectmenu',
@@ -35,8 +35,13 @@ module.exports = {
 
                 interaction.message.embeds[0].fields[0].value = serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>`;
                 interaction.message.edit({ embeds: interaction.message.embeds });
-            })
+            });
+        } else if(val=="description"){
         }
-
     }
 };
+
+const descriptionMODAL = new ModalBuilder()
+    .setCustomId('configmodal_description')
+    .setTitle('Description du serveur')
+    .setComponents()

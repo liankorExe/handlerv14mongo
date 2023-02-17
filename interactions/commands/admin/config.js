@@ -5,7 +5,7 @@ module.exports = {
     name: "config",
     description: "Choisis le délai d'envoi de votre pub",
     options: [],
-    default_member_permissions: 0x8,
+    default_member_permissions: "Administrator",
     run: async (client, interaction) => {
         let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         if (!serverSettings) await serverModel.create({
