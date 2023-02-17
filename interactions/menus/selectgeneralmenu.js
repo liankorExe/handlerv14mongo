@@ -59,7 +59,8 @@ module.exports = {
                 return interaction.reply({ content: `Vous avez déjà désactiver le system de général !` })
             }
             const pos = timeData.general.indexOf(interaction.guild.id)
-            delete timeData.general[pos]
+            timeData.general.splice(pos, 1)
+            timeData.save()
             interaction.reply({ content: `Vous venez de quitter le system de général !` })
         }
     }
