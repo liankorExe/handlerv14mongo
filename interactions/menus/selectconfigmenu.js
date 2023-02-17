@@ -52,7 +52,7 @@ module.exports = {
                                 .setCustomId("description")
                                 .setLabel("Description")
                                 .setMinLength(100)
-                                .setMaxLength(4000)
+                                .setMaxLength(500)
                                 .setRequired(true)
                                 .setStyle(TextInputStyle.Paragraph)
                         ])
