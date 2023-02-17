@@ -18,7 +18,8 @@ module.exports = {
         const val = interaction.values[0]
         if (val === "salon") {
             await interaction.deferUpdate();
-            await interaction.channel.send({ content: "Choisissez un salon", components: [channelMENU] });
+            await interaction.message.edit();
+            await interaction.followUp({ content: "Choisissez un salon", components: [channelMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenuchannel' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
                 .then(async inter => {
@@ -59,10 +60,11 @@ module.exports = {
 
             await interaction.showModal(descriptionMODAL)
             const filter = (inter) => inter.customId === 'configmodal_description';
+            await interaction.message.edit();
             interaction.awaitModalSubmit({ filter, time: 60_000 })
                 .then(async inter => {
                     const desc = await inter.fields.getTextInputValue('description');
-                    await inter.reply({ content: `Description définie: \n\n${desc}` });
+                    await inter.reply({ content: `Description définie: \n\n${desc}`, ephemeral: true });
                     await serverModel.findOneAndUpdate(
                         {
                             serverID: interaction.guild.id,
@@ -79,7 +81,7 @@ module.exports = {
                 .catch(console.error);
         } else if(val=='delai'){
             await interaction.deferUpdate();
-            await interaction.channel.send({ content: "Choisissez un délai", components: [selectheuresMENU] });
+            await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenudelay' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
                 .then(async inter => {
