@@ -11,7 +11,8 @@ module.exports = {
             serverID: interaction.guild.id,
             description: "null",
             salonpub: "null",
-            salongeneral: "null"
+            salongeneral: "null",
+            lastMessageUrl: "null"
         });
 
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });

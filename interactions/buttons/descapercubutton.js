@@ -11,14 +11,16 @@ module.exports = {
             serverID: interaction.guild.id,
             description: "null",
             salonpub: "null",
-            salongeneral: "null"
+            salongeneral: "null",
+            lastMessageUrl: "null"
         });
 
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
         const embedApercu = new EmbedBuilder()
-            .setTitle(`Aperçu`)
-            .setColor(process.env.COLOR)
+            .setTitle(`${interaction.guild.name}`)
+            .setThumbnail(interaction.guild.iconURL())
+            .setColor("#19D103")
             .setDescription(serverSettings.description === "null" ? "Non définie" : serverSettings.description);
 
         interaction.editReply({ embeds: [embedApercu] });

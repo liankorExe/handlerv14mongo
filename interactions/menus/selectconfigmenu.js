@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, Discord, ModalBuilder, ChannelSelectMenuBuilder, ChannelType, TextInputBuilder, TextInputStyle, time } = require("discord.js")
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonStyle, Discord, ButtonBuilder, ModalBuilder, ChannelSelectMenuBuilder, ChannelType, TextInputBuilder, TextInputStyle, time } = require("discord.js")
 const serverModel = require("../../schemas/serverSettings");
 const timeModel = require("../../schemas/timeArrayTable");
+const descModel = require("../../schemas/descWaiting")
 
 module.exports = {
     id: 'configselectmenu',
@@ -12,7 +13,8 @@ module.exports = {
                 serverID: interaction.guild.id,
                 description: "null",
                 salonpub: "null",
-                salongeneral: "null"
+                salongeneral: "null",
+                lastMessageUrl: "null"
             })
         }
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
@@ -62,7 +64,7 @@ module.exports = {
             await interaction.showModal(descriptionMODAL)
             const filter = (inter) => inter.customId === 'configmodal_description';
             await interaction.message.edit();
-            interaction.awaitModalSubmit({ filter, time: 60_000 })
+            interaction.awaitModalSubmit({ filter, time: 60000 * 10 })
                 .then(async inter => {
                     const desc = await inter.fields.getTextInputValue('description');
                     await inter.reply({ content: `Description définie: \n\n${desc}`, ephemeral: true });
@@ -78,6 +80,19 @@ module.exports = {
 
                     interaction.message.embeds[0].fields[2].value = serverSettings.description === "null" ? "Non défini" : `${desc}`;
                     interaction.message.edit({ embeds: interaction.message.embeds });
+
+                    const logschannel = await client.channels.fetch(process.env.LOGCHANNEL)
+                    const embedLogs = new EmbedBuilder()
+                        .setTitle(`Pub du serveur : ${interaction.guild.name}`)
+                        .setDescription(`\`\`\` \`\`\`\n${serverSettings.description}`)
+                        .setColor("#2B2D31")
+
+                    const msgLogs = await logschannel.send({ embeds: [embedLogs], components: [buttonChoix] })
+                    await descModel.create({
+                        messageID: msgLogs.id,
+                        serverID: interaction.guild.id
+                    })
+
                 })
                 .catch(console.error);
         } else if (val == 'delai') {
@@ -85,7 +100,7 @@ module.exports = {
             await interaction.message.edit();
             await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenudelay' && inter.user.id === interaction.user.id;
-            interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
+            interaction.channel.awaitMessageComponent({ filter, time: 60000 })
                 .then(async inter => {
                     const timeData = await timeModel.findOne({ searchInDb: "adshare" });
                     const value = textHoursMap[inter.values[0]];
@@ -104,12 +119,23 @@ module.exports = {
                     interaction.message.embeds[0].fields[1].value = await findGuildHour(interaction.guild.id);
                     interaction.editReply({ embeds: interaction.message.embeds });
 
-
                 })
-                .catch(console.error);
+                .catch();
         }
     }
 };
+
+const buttonChoix = new ActionRowBuilder()
+    .addComponents(
+        new ButtonBuilder()
+            .setCustomId('desc-valider')
+            .setLabel('Valider')
+            .setStyle(ButtonStyle.Success),
+        new ButtonBuilder()
+            .setCustomId('desc-rejeter')
+            .setLabel('Rejeter')
+            .setStyle(ButtonStyle.Danger),
+    )
 
 const channelMENU = new ActionRowBuilder()
     .setComponents([
