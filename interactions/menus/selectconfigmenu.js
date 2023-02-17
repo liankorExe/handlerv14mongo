@@ -41,7 +41,6 @@ module.exports = {
                 })
                 .catch(console.error);
         } else if (val == "description") {
-            await interaction.deferReply({ ephemeral: true });
             let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
             const descriptionMODAL = new ModalBuilder()
                 .setCustomId('configmodal_description')

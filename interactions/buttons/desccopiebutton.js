@@ -5,7 +5,7 @@ module.exports = {
     id: 'desc-copier',
     permissions: [],
     run: async (client, interaction) => {
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
         let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         if (!serverSettings) await serverModel.create({
             serverID: interaction.guild.id,
@@ -16,6 +16,6 @@ module.exports = {
 
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
-        interaction.editReply({ content: `\`\`\`\n${serverSettings.description}\`\`\``, ephemeral: true });
+        interaction.editReply({ content: `\`\`\`\n${serverSettings.description}\`\`\`` });
     }
 };

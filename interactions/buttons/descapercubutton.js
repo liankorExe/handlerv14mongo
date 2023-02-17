@@ -5,7 +5,7 @@ module.exports = {
     id: 'desc-apercu',
     permissions: [],
     run: async (client, interaction) => {
-        await interaction.deferReply();
+        await interaction.deferReply({ ephemeral: true });
         let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         if (!serverSettings) await serverModel.create({
             serverID: interaction.guild.id,
@@ -21,6 +21,6 @@ module.exports = {
             .setColor(process.env.COLOR)
             .setDescription(serverSettings.description === "null" ? "Non définie" : serverSettings.description);
 
-        interaction.editReply({ embeds: [embedApercu], ephemeral: true });
+        interaction.editReply({ embeds: [embedApercu] });
     }
 };
