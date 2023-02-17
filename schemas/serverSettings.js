@@ -5,7 +5,8 @@ const serverSettings = new mongoose.Schema({
     description: { type: String },
     salonpub: { type: String },
     salongeneral: { type: String },
-    lastMessageUrl: { type: String }
+    lastMessageUrl: { type: String },
+    status: { type: Boolean }
 })
 
 const model = mongoose.model("serverSettings", serverSettings)

@@ -14,7 +14,8 @@ module.exports = {
             description: "null",
             salonpub: "null",
             salongeneral: "null",
-            lastMessageUrl: "null"
+            lastMessageUrl: "null",
+            status: false
         });
 
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
@@ -38,6 +39,16 @@ module.exports = {
                             label: 'Description',
                             emoji: `📌`,
                             value: 'description',
+                        },
+                        {
+                            label: 'On',
+                            emoji: `🟢`,
+                            value: 'on',
+                        },
+                        {
+                            label: 'Off',
+                            emoji: `🔴`,
+                            value: 'off',
                         },
                     ),
             );

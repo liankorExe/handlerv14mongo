@@ -14,11 +14,26 @@ module.exports = {
                 description: "null",
                 salonpub: "null",
                 salongeneral: "null",
-                lastMessageUrl: "null"
+                lastMessageUrl: "null",
+                status: false
             })
         }
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
         const val = interaction.values[0]
+        if (val === "on") {
+            await serverModel.findOneAndUpdate(
+                { serverID: interaction.guild.id },
+                { status: true }
+            )
+            interaction.reply({ content: `Vous venez d'activé le système de pub`, ephemeral: true })
+        }
+        if (val === "off") {
+            await serverModel.findOneAndUpdate(
+                { serverID: interaction.guild.id },
+                { status: false }
+            )
+            interaction.reply({ content: `Vous venez de desactivé le système de pub`, ephemeral: true })
+        }
         if (val === "salon") {
             await interaction.deferUpdate();
             await interaction.message.edit();
