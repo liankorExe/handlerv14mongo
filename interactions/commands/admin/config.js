@@ -86,7 +86,7 @@ module.exports = {
         const guildHour = findGuildHour(interaction.guild.id);
         const embedConfig = new EmbedBuilder()
             .setTitle(`⚙ Configuration`)
-            .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}** *`)
+            .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}***`)
             .addFields(
                 { name: `🏷 Salon`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>` },
                 { name: `🕐 Délai`, value: guildHour ?? "Non défini" },
