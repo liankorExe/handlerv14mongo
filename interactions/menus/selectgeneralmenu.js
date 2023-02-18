@@ -24,6 +24,7 @@ module.exports = {
         const val = interaction.values[0]
 
         if (val === "salon") {
+            const channelBefore = await client.channels.fetch(serverSettings.salongeneral)
             const channelMENU = new ActionRowBuilder()
                 .setComponents([
                     new ChannelSelectMenuBuilder()
@@ -47,22 +48,29 @@ module.exports = {
                     );
                     serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
                     const logschannel = await client.channels.fetch(process.env.LOGCHANNEL)
+                    const channelserversettings = await client.channels.fetch(serverSettings.salongeneral)
                     const embedLogs = new EmbedBuilder()
-                        .setTitle(`Pub du serveur : ${interaction.guild.name}`)
-                        .setDescription(`\`\`\` \`\`\`\n${serverSettings.salongeneral}`)
+                        .setTitle(`Changement du salon general du serveur : ${interaction.guild.name}`)
+                        .setDescription(`\`\`\` \`\`\`\n${channelBefore} (${channelBefore.id}) -> ${channelserversettings} (${channelserversettings.id})`)
                         .setColor("#2B2D31")
 
-                    const invite = interaction.guild.createInvite({
-                        maxAge: 86400,
-                        maxUses: 10
+                    const invite = await interaction.guild.invites.create(serverSettings.salongeneral, {
+                        unique: true
                     })
                     const buttonChoix = new ActionRowBuilder()
                         .addComponents(
                             new ButtonBuilder()
-                                .setCustomId('invite')
                                 .setLabel(`Aller voir`)
-                                .setURL(invite)
+                                .setURL(`${invite}`)
                                 .setStyle(ButtonStyle.Link),
+                            new ButtonBuilder()
+                                .setCustomId(`salon-valider`)
+                                .setLabel(`Valider`)
+                                .setStyle(ButtonStyle.Success),
+                            new ButtonBuilder()
+                                .setCustomId(`salon-refuser`)
+                                .setLabel(`Refuser`)
+                                .setStyle(ButtonStyle.Danger),
                         )
                     const msgLogs = await logschannel.send({ embeds: [embedLogs], components: [buttonChoix] })
                     await salonModel.create({
