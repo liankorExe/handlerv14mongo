@@ -35,8 +35,7 @@ module.exports = {
             interaction.reply({ content: `Vous venez de desactivé le système de pub`, ephemeral: true });
         }
         if (val === "salon") {
-            await interaction.deferUpdate();
-            await interaction.editReply();
+            await interaction.update({});
             await interaction.followUp({ content: "Choisissez un salon", components: [channelMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenuchannel' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
@@ -110,8 +109,7 @@ module.exports = {
                 })
                 .catch(console.error);
         } else if (val == 'delai') {
-            await interaction.deferUpdate();
-            await interaction.editReply();
+            await interaction.update({});
             await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenudelay' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60000 })
