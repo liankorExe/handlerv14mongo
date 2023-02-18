@@ -36,7 +36,7 @@ module.exports = {
         }
         if (val === "salon") {
             await interaction.deferUpdate();
-            await interaction.message.edit();
+            await interaction.editReply();
             await interaction.followUp({ content: "Choisissez un salon", components: [channelMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenuchannel' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
@@ -54,7 +54,7 @@ module.exports = {
                     serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
                     interaction.message.embeds[0].fields[0].value = serverSettings.salonpub === "null" ? "Non défini" : `<#${id}>`;
-                    interaction.message.edit({ embeds: interaction.message.embeds });
+                    interaction.editReply({ embeds: interaction.message.embeds });
                 })
                 .catch(console.error);
         } else if (val == "description") {
@@ -78,7 +78,6 @@ module.exports = {
 
             await interaction.showModal(descriptionMODAL)
             const filter = (inter) => inter.customId === 'configmodal_description';
-            await interaction.message.edit();
             interaction.awaitModalSubmit({ filter, time: 60000 * 10 })
                 .then(async inter => {
                     const desc = await inter.fields.getTextInputValue('description');
@@ -94,7 +93,7 @@ module.exports = {
                     serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
                     interaction.message.embeds[0].fields[2].value = serverSettings.description === "null" ? "Non défini" : `${desc}`;
-                    interaction.message.edit({ embeds: interaction.message.embeds });
+                    interaction.editReply({ embeds: interaction.message.embeds });
 
                     const logschannel = await client.channels.fetch(process.env.LOGCHANNEL);
                     const embedLogs = new EmbedBuilder()
@@ -112,7 +111,7 @@ module.exports = {
                 .catch(console.error);
         } else if (val == 'delai') {
             await interaction.deferUpdate();
-            await interaction.message.edit();
+            await interaction.editReply();
             await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenudelay' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60000 })
