@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBui
 const serverModel = require("../../schemas/serverSettings");
 const timeModel = require("../../schemas/timeArrayTable");
 const descModel = require("../../schemas/descWaiting");
+const salonModel = require("../../schemas/salonWaiting");
 
 module.exports = {
     id: 'configselectmenu',
