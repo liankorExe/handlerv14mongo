@@ -24,7 +24,7 @@ module.exports = {
         const val = interaction.values[0]
 
         if (val === "salon") {
-            const channelBefore = await client.channels.fetch(serverSettings.salongeneral)
+            const channelBeforeId = serverSettings.salongeneral == "null" ? "Aucun" : await client.channels.fetch(serverSettings.salongeneral).id;
             const channelMENU = new ActionRowBuilder()
                 .setComponents([
                     new ChannelSelectMenuBuilder()
@@ -51,7 +51,7 @@ module.exports = {
                     const channelserversettings = await client.channels.fetch(serverSettings.salongeneral)
                     const embedLogs = new EmbedBuilder()
                         .setTitle(`Changement du salon general du serveur : ${interaction.guild.name}`)
-                        .setDescription(`\`\`\` \`\`\`\n${channelBefore} (${channelBefore.id}) -> ${channelserversettings} (${channelserversettings.id})`)
+                        .setDescription(`\`\`\` \`\`\`\n<#${channelBeforeId}> (${channelBeforeId}) -> ${channelserversettings} (${channelserversettings.id})`)
                         .setColor("#2B2D31")
 
                     const invite = await interaction.guild.invites.create(serverSettings.salongeneral, {
