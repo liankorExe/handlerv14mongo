@@ -2,6 +2,9 @@ const client = require('..');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
 const cron = require('node-cron');
+const timeModel = require('../schemas/timeArrayTable');
+const serverModel = require('../schemas/serverSettings');
+const { PermissionsBitField, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
 
 client.on('ready', async () => {
@@ -67,6 +70,47 @@ async function sendServers(delay) {
     }[delay];
 
     const receivingServersIds = shuffleNoDuplicates(sendingServersIds);
+    sendingServersIds.forEach(async senderServerId => {
+        const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
+        if(!receiverServerGuild) {
+            return console.log(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`);
+        };
+
+        const receiverServerSettings = await serverModel.findOne({ serverID: receiverServerGuild.id });
+
+        const receiverChannel = await receiverServerGuild.channels.cache.get(receiverServerSettings.salonpub);
+        if(!receiverChannel) {
+            return console.log(`[SENDER] Receiver channel ${receiverServerSettings.salonpub} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`);
+        }
+        if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return console.log({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !` });
+
+        const senderServer = await client.guilds.cache.get(senderServerId);
+        if(!senderServer) {
+            return console.log(`[SENDER] Receiver server ${senderServerId} not found, skipping`);
+        };
+
+        const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
+        const inviteLink = "Generate invite link for sender server";
+        try{
+            await receiverChannel.send({
+                embeds: [
+                    new EmbedBuilder()
+                    .setTitle(senderServer.name)
+                    .setURL(inviteLink)
+                    .setDescription(senderServerSettings.description)
+                    .setThumbnail(senderServer.iconURL({ size: 1024 }))
+                ],
+                components: [
+                    new ButtonBuilder()
+                        .setLabel('Rejoindre le serveur')
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(inviteLink)
+                        .setEmoji('1063501870540275782')
+                ]
+            })
+        } catch(error){}
+    });
+    
 
 };
 
