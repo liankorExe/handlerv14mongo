@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, Discord, ModalBuilder, ChannelSelectMenuBuilder, ChannelType, TextInputBuilder, TextInputStyle, time } = require("discord.js")
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, Discord, ModalBuilder, ChannelSelectMenuBuilder, ChannelType, TextInputBuilder, TextInputStyle, time } = require("discord.js")
 const serverModel = require("../../schemas/serverSettings");
 const timeModel = require("../../schemas/timeArrayTable");
+const salonModel = require("../../schemas/salonWaiting")
 
 module.exports = {
     id: 'selectgeneralmenu',
@@ -45,6 +46,30 @@ module.exports = {
                         },
                     );
                     serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
+                    const logschannel = await client.channels.fetch(process.env.LOGCHANNEL)
+                    const embedLogs = new EmbedBuilder()
+                        .setTitle(`Pub du serveur : ${interaction.guild.name}`)
+                        .setDescription(`\`\`\` \`\`\`\n${serverSettings.salongeneral}`)
+                        .setColor("#2B2D31")
+
+                    const invite = interaction.guild.createInvite({
+                        maxAge: 86400,
+                        maxUses: 10
+                    })
+                    const buttonChoix = new ActionRowBuilder()
+                        .addComponents(
+                            new ButtonBuilder()
+                                .setCustomId('invite')
+                                .setLabel(`Aller voir`)
+                                .setURL(invite)
+                                .setStyle(ButtonStyle.Link),
+                        )
+                    const msgLogs = await logschannel.send({ embeds: [embedLogs], components: [buttonChoix] })
+                    await salonModel.create({
+                        messageID: msgLogs.id,
+                        serverID: interaction.guild.id,
+                        inviteServer: invite
+                    })
                 })
                 .catch(console.error);
         }

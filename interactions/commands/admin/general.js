@@ -1,4 +1,4 @@
-const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require("discord.js")
+const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle } = require("discord.js")
 const timeModel = require("../../../schemas/timeArrayTable")
 
 module.exports = {
@@ -6,9 +6,10 @@ module.exports = {
     description: "Choisis le salon pour le system de general",
     options: [],
     default_member_permissions: "Administrator",
+    botPerms: [PermissionsBitField.Flags.ViewChannel],
     run: async (client, interaction) => {
         const timeData = await timeModel.findOne({ searchInDb: "adshare" });
-        if (interaction.guild.memberCount < 200) {
+        if (interaction.guild.memberCount < 2) {
             return interaction.reply({ content: `Votre serveur a besoin d'avoir minimum 200 membres !`, ephemeral: true })
         }
         const buttonInfo = new ActionRowBuilder()
