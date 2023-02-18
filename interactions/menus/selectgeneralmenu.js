@@ -55,7 +55,8 @@ module.exports = {
                         .setColor("#2B2D31")
 
                     const invite = await interaction.guild.invites.create(serverSettings.salongeneral, {
-                        unique: true
+                        unique: true,
+                        maxUses: 1
                     })
                     const buttonChoix = new ActionRowBuilder()
                         .addComponents(
