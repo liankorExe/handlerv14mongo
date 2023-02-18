@@ -1,13 +1,13 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonStyle, Discord, ButtonBuilder, ModalBuilder, ChannelSelectMenuBuilder, ChannelType, TextInputBuilder, TextInputStyle, time } = require("discord.js")
 const serverModel = require("../../schemas/serverSettings");
 const timeModel = require("../../schemas/timeArrayTable");
-const descModel = require("../../schemas/descWaiting")
+const descModel = require("../../schemas/descWaiting");
 
 module.exports = {
     id: 'configselectmenu',
     permissions: [],
     run: async (client, interaction) => {
-        let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
+        let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         if (!serverSettings) {
             await serverModel.create({
                 serverID: interaction.guild.id,
@@ -16,23 +16,23 @@ module.exports = {
                 salongeneral: "null",
                 lastMessageUrl: "null",
                 status: false
-            })
-        }
-        serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
-        const val = interaction.values[0]
+            });
+        };
+        serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
+        const val = interaction.values[0];
         if (val === "on") {
             await serverModel.findOneAndUpdate(
                 { serverID: interaction.guild.id },
                 { status: true }
-            )
-            interaction.reply({ content: `Vous venez d'activé le système de pub`, ephemeral: true })
+            );
+            interaction.reply({ content: `Vous venez d'activé le système de pub`, ephemeral: true });
         }
         if (val === "off") {
             await serverModel.findOneAndUpdate(
                 { serverID: interaction.guild.id },
                 { status: false }
-            )
-            interaction.reply({ content: `Vous venez de desactivé le système de pub`, ephemeral: true })
+            );
+            interaction.reply({ content: `Vous venez de desactivé le système de pub`, ephemeral: true });
         }
         if (val === "salon") {
             await interaction.deferUpdate();
@@ -41,7 +41,7 @@ module.exports = {
             const filter = (inter) => inter.customId === 'configselectmenuchannel' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
                 .then(async inter => {
-                    const id = inter.channels.first().id
+                    const id = inter.channels.first().id;
                     inter.update({ content: `Vous avez sélectionné le salon <#${id}>`, components: [] });
                     await serverModel.findOneAndUpdate(
                         {
@@ -58,7 +58,7 @@ module.exports = {
                 })
                 .catch(console.error);
         } else if (val == "description") {
-            let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
+            let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
             const descriptionMODAL = new ModalBuilder()
                 .setCustomId('configmodal_description')
                 .setTitle('Description du serveur')
@@ -73,8 +73,8 @@ module.exports = {
                                 .setRequired(true)
                                 .setStyle(TextInputStyle.Paragraph)
                         ])
-                ])
-            if (serverSettings.description != "null") descriptionMODAL.components[0].components[0].setValue(serverSettings.description)
+                ]);
+            if (serverSettings.description != "null") descriptionMODAL.components[0].components[0].setValue(serverSettings.description);
 
             await interaction.showModal(descriptionMODAL)
             const filter = (inter) => inter.customId === 'configmodal_description';
@@ -96,17 +96,17 @@ module.exports = {
                     interaction.message.embeds[0].fields[2].value = serverSettings.description === "null" ? "Non défini" : `${desc}`;
                     interaction.message.edit({ embeds: interaction.message.embeds });
 
-                    const logschannel = await client.channels.fetch(process.env.LOGCHANNEL)
+                    const logschannel = await client.channels.fetch(process.env.LOGCHANNEL);
                     const embedLogs = new EmbedBuilder()
                         .setTitle(`Pub du serveur : ${interaction.guild.name}`)
                         .setDescription(`\`\`\` \`\`\`\n${serverSettings.description}`)
-                        .setColor("#2B2D31")
+                        .setColor("#2B2D31");
 
-                    const msgLogs = await logschannel.send({ embeds: [embedLogs], components: [buttonChoix] })
+                    const msgLogs = await logschannel.send({ embeds: [embedLogs], components: [buttonChoix] });
                     await descModel.create({
                         messageID: msgLogs.id,
                         serverID: interaction.guild.id
-                    })
+                    });
 
                 })
                 .catch(console.error);
@@ -127,7 +127,7 @@ module.exports = {
                         "12H": timeData.douze,
                         "24H": timeData.vingtquatre
                     };
-                    checkAndAddId(hoursMap[value], inter.guild.id, timeData)
+                    checkAndAddId(hoursMap[value], inter.guild.id, timeData);
 
                     await inter.update({ content: `Le délai a bien été défini sur ${value}`, components: [] });
 
@@ -150,7 +150,7 @@ const buttonChoix = new ActionRowBuilder()
             .setCustomId('desc-rejeter')
             .setLabel('Rejeter')
             .setStyle(ButtonStyle.Danger),
-    )
+    );
 
 const channelMENU = new ActionRowBuilder()
     .setComponents([
@@ -158,7 +158,7 @@ const channelMENU = new ActionRowBuilder()
             .setCustomId('configselectmenuchannel')
             .setChannelTypes(ChannelType.GuildText)
             .setPlaceholder("Choisissez un salon")
-    ])
+    ]);
 
 
 const selectheuresMENU = new ActionRowBuilder()
@@ -209,10 +209,10 @@ const checkAndAddId = (newArr, guildId, timeData) => {
     const indexVingtquatre = timeData.vingtquatre.indexOf(guildId);
     if (indexVingtquatre > -1) timeData.vingtquatre.splice(indexVingtquatre, 1);
     if (!newArr.includes(guildId)) {
-        newArr.push(guildId)
-        timeData.save()
-    }
-}
+        newArr.push(guildId);
+        timeData.save();
+    };
+};
 
 const findGuildHour = async (guildId) => {
     const timeData = await timeModel.findOne({ searchInDb: "adshare" });
@@ -227,10 +227,10 @@ const findGuildHour = async (guildId) => {
     for (const [hour, guildIds] of Object.entries(hoursMap)) {
         if (guildIds.includes(guildId)) {
             return hour;
-        }
-    }
+        };
+    };
     return null;
-}
+};
 
 const textHoursMap = {
     "deux": "2H",
@@ -239,4 +239,4 @@ const textHoursMap = {
     "huit": "8H",
     "douze": "12H",
     "vingtquatre": "24H",
-}
+};
