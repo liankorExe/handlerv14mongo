@@ -66,7 +66,7 @@ async function sendServers(delay) {
         "general": timeData.general,
     }[delay];
 
-    const receivingServersIds = shuffleNoDuplicates(sendingServers);
+    const receivingServersIds = shuffleNoDuplicates(sendingServersIds);
 
 };
 
