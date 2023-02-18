@@ -18,6 +18,6 @@ module.exports = {
 
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
-        interaction.editReply({ content: `\`\`\`\n${serverSettings.description}\`\`\`` });
+        interaction.editReply({ content: `\`\`\`\n${serverSettings.description === "null" ? "Aucune description" : serverSettings.description}\`\`\`` });
     }
 };
