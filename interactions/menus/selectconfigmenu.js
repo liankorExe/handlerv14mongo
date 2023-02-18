@@ -26,14 +26,14 @@ module.exports = {
                 { serverID: interaction.guild.id },
                 { status: true }
             );
-            interaction.reply({ content: `Vous venez d'activé le système de pub`, ephemeral: true });
+            interaction.reply({ content: `Vous venez d'activer le système de pub`, ephemeral: true });
         }
         if (val === "off") {
             await serverModel.findOneAndUpdate(
                 { serverID: interaction.guild.id },
                 { status: false }
             );
-            interaction.reply({ content: `Vous venez de desactivé le système de pub`, ephemeral: true });
+            interaction.reply({ content: `Vous venez de desactiver le système de pub`, ephemeral: true });
         }
         if (val === "salon") {
             const channelBeforeId = serverSettings.salonpub == "null" ? "Aucun" : await client.channels.fetch(serverSettings.salonpub).id;
