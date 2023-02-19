@@ -70,7 +70,7 @@ async function sendServers(delay) {
     }[delay];
 
     const receivingServersIds = shuffleNoDuplicates(sendingServersIds);
-    sendingServersIds.forEach(async senderServerId => {
+    sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
         if(!receiverServerGuild) {
             return console.log(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`);

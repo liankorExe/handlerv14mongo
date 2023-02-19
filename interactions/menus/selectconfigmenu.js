@@ -54,7 +54,7 @@ module.exports = {
                     );
                     serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
-                    interaction.message.embeds[0].fields[0].value = serverSettings.salonpub === "null" ? "Non défini" : `<#${id}>`;
+                    interaction.message.embeds[0].fields[1].value = serverSettings.salonpub === "null" ? "Non défini" : `<#${id}>`;
                     interaction.editReply({ embeds: interaction.message.embeds });
                     const logschannel = await client.channels.fetch(process.env.LOGCHANNEL)
                     const channelserversettings = await client.channels.fetch(serverSettings.salonpub)
@@ -89,7 +89,7 @@ module.exports = {
                         inviteServer: invite
                     })
                 })
-                .catch(console.error);
+                .catch();
         } else if (val == "description") {
             let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
             const descriptionMODAL = new ModalBuilder()
@@ -109,7 +109,8 @@ module.exports = {
                 ]);
             if (serverSettings.description != "null") descriptionMODAL.components[0].components[0].setValue(serverSettings.description);
 
-            await interaction.showModal(descriptionMODAL)
+            await interaction.showModal(descriptionMODAL);
+            await interaction?.message?.edit({});
             const filter = (inter) => inter.customId === 'configmodal_description';
             interaction.awaitModalSubmit({ filter, time: 60000 * 10 })
                 .then(async inter => {
@@ -125,7 +126,7 @@ module.exports = {
                     );
                     serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
-                    interaction.message.embeds[0].fields[2].value = serverSettings.description === "null" ? "Non défini" : `${desc}`;
+                    interaction.message.embeds[0].fields[7].value = serverSettings.description === "null" ? "Non défini" : `${desc}`;
                     interaction.editReply({ embeds: interaction.message.embeds });
 
                     const logschannel = await client.channels.fetch(process.env.LOGCHANNEL);
@@ -141,7 +142,7 @@ module.exports = {
                     });
 
                 })
-                .catch(console.error);
+                .catch();
         } else if (val == 'delai') {
             await interaction.update({});
             await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
@@ -162,7 +163,7 @@ module.exports = {
 
                     await inter.update({ content: `Le délai a bien été défini sur ${value}`, components: [] });
 
-                    interaction.message.embeds[0].fields[1].value = await findGuildHour(interaction.guild.id);
+                    interaction.message.embeds[0].fields[2].value = await findGuildHour(interaction.guild.id);
                     interaction.editReply({ embeds: interaction.message.embeds });
 
                 })
