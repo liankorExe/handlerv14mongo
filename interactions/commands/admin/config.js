@@ -88,11 +88,14 @@ module.exports = {
             .setTitle(`⚙ Configuration`)
             .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}***`)
             .addFields(
-                { name: `🏷 Salon`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>` },
+                { name:'\u200B', value:'\u200B' },
+                { name: `🏷 Salon publicitaire`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>`, inline: true },
                 { name: `🕐 Délai`, value: guildHour ?? "Non défini", inline: true },
-                { name: `🏷 Salon`, value: serverSettings.salongeneral === "null" ? "Non défini" : `<#${serverSettings.salongeneral}>` },
+                { name:'\u200B', value:'\u200B' },
+                { name: `🏷 Salon général`, value: serverSettings.salongeneral === "null" ? "Non défini" : `<#${serverSettings.salongeneral}>`, inline: true },
                 { name: `🕐 Délai`, value: "12H", inline: true },
-                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description}` },
+                { name:'\u200B', value:'\u200B' },
+                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description}`, inline: false },
             )
             .setColor(process.env.COLOR);
 
