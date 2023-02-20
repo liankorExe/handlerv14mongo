@@ -7,7 +7,6 @@ module.exports = {
     description: "Choisis le délai d'envoi de votre pub",
     options: [],
     default_member_permissions: "Administrator",
-    botPerms: [PermissionsBitField.Flags.ViewChannel],
     run: async (client, interaction) => {
         let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         if (!serverSettings) await serverModel.create({

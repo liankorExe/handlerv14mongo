@@ -6,7 +6,6 @@ module.exports = {
     description: "Choisis le salon pour le system de general",
     options: [],
     default_member_permissions: "Administrator",
-    botPerms: [PermissionsBitField.Flags.ViewChannel],
     run: async (client, interaction) => {
         const timeData = await timeModel.findOne({ searchInDb: "adshare" });
         if (interaction.guild.memberCount < 2) {
