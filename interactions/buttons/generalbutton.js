@@ -1,12 +1,10 @@
-const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle } = require("discord.js")
-const timeModel = require("../../../schemas/timeArrayTable")
-const checkPerms = require("../../../functions")
+const { Discord, ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder, EmbedBuilder, ButtonStyle } = require("discord.js")
+const timeModel = require("../../schemas/timeArrayTable")
+const checkPerms = require("../../functions")
 
 module.exports = {
-    name: "general",
-    description: "Choisis le salon pour le system de general",
-    options: [],
-    default_member_permissions: "Administrator",
+    id: 'general-button',
+    permissions: [],
     run: async (client, interaction) => {
         const perms = checkPerms(client, interaction)
         if (!perms) {

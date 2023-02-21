@@ -68,6 +68,10 @@ module.exports = {
                     .setCustomId('desc-apercu')
                     .setLabel('Aperçu')
                     .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId('general-button')
+                    .setLabel('Général')
+                    .setStyle(ButtonStyle.Secondary),
             )
         const timeData = await timeModel.findOne({ searchInDb: "adshare" });
         const hoursMap = {
@@ -90,7 +94,7 @@ module.exports = {
         const guildHour = findGuildHour(interaction.guild.id);
         const embedConfig = new EmbedBuilder()
             .setTitle(`⚙ Configuration`)
-            .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}***`)
+            .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}***\n\n${serverSettings.description === "null" ? "Votre serveur à été refusé. 🔴" : "Votre serveur à été accepté. 🟢"}`)
             .addFields(
                 { name: '\u200B', value: '\u200B' },
                 { name: `🏷 Salon publicitaire`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>`, inline: true },
@@ -99,7 +103,7 @@ module.exports = {
                 { name: `🏷 Salon général`, value: serverSettings.salongeneral === "null" ? "Non défini" : `<#${serverSettings.salongeneral}>`, inline: true },
                 { name: `🕐 Délai`, value: "12H", inline: true },
                 { name: '\u200B', value: '\u200B' },
-                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description}`, inline: false },
+                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description.replace(/\${back}/g, "\n")}`, inline: false },
             )
             .setColor(process.env.COLOR);
 

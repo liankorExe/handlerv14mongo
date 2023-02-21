@@ -3,6 +3,7 @@ const serverModel = require("../../schemas/serverSettings");
 const timeModel = require("../../schemas/timeArrayTable");
 const descModel = require("../../schemas/descWaiting");
 const salonModel = require("../../schemas/salonWaiting");
+const checkPerms = require("../../functions")
 
 module.exports = {
     id: 'configselectmenu',
@@ -22,6 +23,10 @@ module.exports = {
         serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         const val = interaction.values[0];
         if (val === "on") {
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
             await serverModel.findOneAndUpdate(
                 { serverID: interaction.guild.id },
                 { status: true }
@@ -29,6 +34,10 @@ module.exports = {
             interaction.reply({ content: `Vous venez d'activer le système de pub`, ephemeral: true });
         }
         if (val === "off") {
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
             await serverModel.findOneAndUpdate(
                 { serverID: interaction.guild.id },
                 { status: false }
@@ -36,6 +45,10 @@ module.exports = {
             interaction.reply({ content: `Vous venez de desactiver le système de pub`, ephemeral: true });
         }
         if (val === "salon") {
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
             const channelBeforeId = serverSettings.salonpub == "null" ? "Aucun" : await client.channels.fetch(serverSettings.salonpub).id;
             await interaction.update({});
             await interaction.followUp({ content: "Choisissez un salon", components: [channelMENU], ephemeral: true });
@@ -91,6 +104,10 @@ module.exports = {
                 })
                 .catch();
         } else if (val == "description") {
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
             function checkTailleDesc(description) {
                 description = description.trim();
                 description = description.replace(/[\r\n]+/g, '${back}');
@@ -139,7 +156,7 @@ module.exports = {
                 serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
                 interaction.message.embeds[0].fields[7].value = serverSettings.description === 'null' ? 'Non défini' : `${descBefore}`;
-                interaction.editReply({ embeds: interaction.message.embeds });
+                interaction.message.edit({ embeds: interaction.message.embeds });
 
                 const logschannel = await client.channels.fetch(process.env.LOGCHANNEL);
                 const embedLogs = new EmbedBuilder()
@@ -147,7 +164,7 @@ module.exports = {
                     .setDescription(`\`\`\` \`\`\`\n${descBefore}`)
                     .setColor('#2B2D31');
 
-                const msgLogs = await logschannel.send({ embeds: [embedLogs] });
+                const msgLogs = await logschannel.send({ embeds: [embedLogs], components: [buttonChoix] });
                 await descModel.create({
                     messageID: msgLogs.id,
                     serverID: interaction.guild.id,
@@ -155,8 +172,11 @@ module.exports = {
             }).catch();
 
         } else if (val == 'delai') {
-            await interaction.update({});
-            await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
+            await interaction.reply({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenudelay' && inter.user.id === interaction.user.id;
             interaction.channel.awaitMessageComponent({ filter, time: 60000 })
                 .then(async inter => {

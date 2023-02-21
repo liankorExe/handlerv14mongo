@@ -24,6 +24,10 @@ module.exports = {
         const val = interaction.values[0]
 
         if (val === "salon") {
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
             const channelBeforeId = serverSettings.salongeneral == "null" ? "Aucun" : await client.channels.fetch(serverSettings.salongeneral).id;
             const channelMENU = new ActionRowBuilder()
                 .setComponents([
@@ -83,6 +87,10 @@ module.exports = {
                 .catch(console.error);
         }
         if (val === "on") {
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
             if (timeData.general.includes(interaction.guild.id)) {
                 return interaction.reply({ content: `Vous avez déjà activé le system de général !`, ephemeral: true })
             }
@@ -91,6 +99,10 @@ module.exports = {
             interaction.reply({ content: `Vous venez de rejoindre le system de général !`, ephemeral: true })
         }
         if (val === "off") {
+            const perms = checkPerms(client, interaction)
+            if (!perms) {
+                return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            }
             if (!timeData.general.includes(interaction.guild.id)) {
                 return interaction.reply({ content: `Vous avez déjà désactivé le system de général !`, ephemeral: true })
             }
