@@ -1,6 +1,7 @@
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle } = require("discord.js");
 const serverModel = require("../../../schemas/serverSettings");
 const timeModel = require("../../../schemas/timeArrayTable");
+const checkPerms = require("../../../functions")
 
 module.exports = {
     name: "config",
@@ -8,6 +9,10 @@ module.exports = {
     options: [],
     default_member_permissions: "Administrator",
     run: async (client, interaction) => {
+        const perms = checkPerms(client, interaction)
+        if (!perms) {
+            return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+        }
         let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         if (!serverSettings) await serverModel.create({
             serverID: interaction.guild.id,
@@ -87,13 +92,13 @@ module.exports = {
             .setTitle(`⚙ Configuration`)
             .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}***`)
             .addFields(
-                { name:'\u200B', value:'\u200B' },
+                { name: '\u200B', value: '\u200B' },
                 { name: `🏷 Salon publicitaire`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>`, inline: true },
                 { name: `🕐 Délai`, value: guildHour ?? "Non défini", inline: true },
-                { name:'\u200B', value:'\u200B' },
+                { name: '\u200B', value: '\u200B' },
                 { name: `🏷 Salon général`, value: serverSettings.salongeneral === "null" ? "Non défini" : `<#${serverSettings.salongeneral}>`, inline: true },
                 { name: `🕐 Délai`, value: "12H", inline: true },
-                { name:'\u200B', value:'\u200B' },
+                { name: '\u200B', value: '\u200B' },
                 { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description}`, inline: false },
             )
             .setColor(process.env.COLOR);

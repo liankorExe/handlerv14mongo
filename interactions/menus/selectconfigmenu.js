@@ -91,6 +91,12 @@ module.exports = {
                 })
                 .catch();
         } else if (val == "description") {
+            function checkTailleDesc(description) {
+                description = description.trim();
+                description = description.replace(/[\r\n]+/g, '${back}');
+                return description;
+            }
+
             let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
             const descriptionMODAL = new ModalBuilder()
                 .setCustomId('configmodal_description')
@@ -99,50 +105,55 @@ module.exports = {
                     new ActionRowBuilder()
                         .setComponents([
                             new TextInputBuilder()
-                                .setCustomId("description")
-                                .setLabel("Description")
+                                .setCustomId('description')
+                                .setLabel('Description')
                                 .setMinLength(100)
                                 .setMaxLength(500)
                                 .setRequired(true)
-                                .setStyle(TextInputStyle.Paragraph)
-                        ])
+                                .setStyle(TextInputStyle.Paragraph),
+                        ]),
                 ]);
-            if (serverSettings.description != "null") descriptionMODAL.components[0].components[0].setValue(serverSettings.description);
+            if (serverSettings.description !== 'null') {
+                if (serverSettings.description.replace(/\${back}/g, "\n").length >= 100 && serverSettings.description.replace(/\${back}/g, "\n").length <= 500) descriptionMODAL.components[0].components[0].setValue(serverSettings.description.replace(/\${back}/g, "\n"));
+            }
 
             await interaction.showModal(descriptionMODAL);
             await interaction?.message?.edit({});
             const filter = (inter) => inter.customId === 'configmodal_description';
-            interaction.awaitModalSubmit({ filter, time: 60000 * 10 })
-                .then(async inter => {
-                    const desc = await inter.fields.getTextInputValue('description');
-                    await inter.reply({ content: `Description définie: \n\n${desc}`, ephemeral: true });
-                    await serverModel.findOneAndUpdate(
-                        {
-                            serverID: interaction.guild.id,
-                        },
-                        {
-                            description: desc,
-                        },
-                    );
-                    serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
+            interaction.awaitModalSubmit({ filter, time: 60000 * 10 }).then(async (inter) => {
+                let descBefore = await inter.fields.getTextInputValue('description');
+                let desc = checkTailleDesc(descBefore);
+                if (desc.length < 100 || desc.length > 500) {
+                    await inter.reply({ content: 'La description doit contenir entre 100 et 500 caractères.', ephemeral: true });
+                    return;
+                }
+                await inter.reply({ content: `Description définie: \n\n${descBefore}`, ephemeral: true });
+                await serverModel.findOneAndUpdate(
+                    {
+                        serverID: interaction.guild.id,
+                    },
+                    {
+                        description: desc,
+                    },
+                );
+                serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
 
-                    interaction.message.embeds[0].fields[7].value = serverSettings.description === "null" ? "Non défini" : `${desc}`;
-                    interaction.editReply({ embeds: interaction.message.embeds });
+                interaction.message.embeds[0].fields[7].value = serverSettings.description === 'null' ? 'Non défini' : `${descBefore}`;
+                interaction.editReply({ embeds: interaction.message.embeds });
 
-                    const logschannel = await client.channels.fetch(process.env.LOGCHANNEL);
-                    const embedLogs = new EmbedBuilder()
-                        .setTitle(`Pub du serveur : ${interaction.guild.name}`)
-                        .setDescription(`\`\`\` \`\`\`\n${serverSettings.description}`)
-                        .setColor("#2B2D31");
+                const logschannel = await client.channels.fetch(process.env.LOGCHANNEL);
+                const embedLogs = new EmbedBuilder()
+                    .setTitle(`Pub du serveur : ${interaction.guild.name}`)
+                    .setDescription(`\`\`\` \`\`\`\n${descBefore}`)
+                    .setColor('#2B2D31');
 
-                    const msgLogs = await logschannel.send({ embeds: [embedLogs], components: [buttonChoix] });
-                    await descModel.create({
-                        messageID: msgLogs.id,
-                        serverID: interaction.guild.id
-                    });
+                const msgLogs = await logschannel.send({ embeds: [embedLogs] });
+                await descModel.create({
+                    messageID: msgLogs.id,
+                    serverID: interaction.guild.id,
+                });
+            }).catch();
 
-                })
-                .catch();
         } else if (val == 'delai') {
             await interaction.update({});
             await interaction.followUp({ content: "Choisissez un délai", components: [selectheuresMENU], ephemeral: true });
