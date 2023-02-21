@@ -39,7 +39,7 @@ module.exports = {
                     return;
                 } else {
                     interaction.followUp({ content: `Le serveur ${server.name} a été blacklisté !`, ephemeral: true })
-                    blackliste.servers.push(server.id)
+                    blackliste.servers.push({ name: server.name, id: server.id })
                     blackliste.save()
                     server.leave()
                 }

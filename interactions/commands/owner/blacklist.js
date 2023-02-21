@@ -38,11 +38,8 @@ module.exports = {
         if (serverIds.length === 0) {
             serverList.push("Aucun serveur n'est actuellement blacklisté.");
         } else {
-            for (const id of serverIds) {
-                const server = await client.guilds.fetch(id);
-                if (server) {
-                    serverList.push(`${server.name} (${server.id})`);
-                }
+            for (const { name, id } of serverIds) {
+                serverList.push(`${name} (${id})`);
             }
         }
 
