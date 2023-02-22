@@ -1,6 +1,7 @@
 const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionsBitField, ButtonBuilder, ButtonStyle } = require("discord.js")
 const timeModel = require("../../../schemas/timeArrayTable")
 const checkPerms = require("../../../functions")
+const blModel = require("../../../schemas/blacklist")
 
 module.exports = {
     name: "general",
@@ -8,6 +9,16 @@ module.exports = {
     options: [],
     default_member_permissions: "Administrator",
     run: async (client, interaction) => {
+        let blackliste = await blModel.findOne({ adshare: "adshare" });
+        if (!blackliste) await blModel.create({
+            adshare: "adshare",
+            servers: [],
+        });
+
+        blackliste = await blModel.findOne({ adshare: "adshare" });
+        if (blackliste.servers.includes(interaction.guild.id)) {
+            return interaction.reply({ content: `Votre serveur à été blacklist, rendez-vous sur le support pour connaître la raison de cela, faites /help puis cliquez sur le bouton support pour y accéder.`, ephemeral: true });
+        }
         const perms = checkPerms(client, interaction)
         if (!perms) {
             return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })

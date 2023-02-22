@@ -1,6 +1,6 @@
 const { Discord, EmbedBuilder, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require("discord.js")
 const blModel = require("../../schemas/blacklist");
-
+const axios = require('axios');
 module.exports = {
     id: 'add-bl',
     permissions: [],
@@ -33,18 +33,9 @@ module.exports = {
             .then(async inter => {
                 await inter.deferUpdate()
                 const servid = await inter.fields.getTextInputValue('serveurId');
-                const server = client.guilds.cache.get(servid);
-                if (!server) {
-                    interaction.followUp({ content: `Le bot n'est pas présent sur le serveur ${servid}.`, ephemeral: true });
-                    return;
-                } else {
-                    interaction.followUp({ content: `Le serveur ${server.name} a été blacklisté !`, ephemeral: true })
-                    blackliste.servers.push({ name: server.name, id: server.id })
-                    blackliste.save()
-                    server.leave()
-                }
-            }).catch(() => {
-                return;
+                inter.followUp({ content: `Le serveur ${servid} a été blacklisté !`, ephemeral: true });
+                blackliste.servers.push(servid);
+                blackliste.save();
             })
     }
 };

@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, Butt
 const serverModel = require("../../schemas/serverSettings");
 const timeModel = require("../../schemas/timeArrayTable");
 const salonModel = require("../../schemas/salonWaiting")
+const checkPerms = require("../../functions")
 
 module.exports = {
     id: 'selectgeneralmenu',

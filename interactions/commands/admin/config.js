@@ -2,6 +2,7 @@ const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionsBitF
 const serverModel = require("../../../schemas/serverSettings");
 const timeModel = require("../../../schemas/timeArrayTable");
 const checkPerms = require("../../../functions")
+const blModel = require("../../../schemas/blacklist")
 
 module.exports = {
     name: "config",
@@ -9,6 +10,16 @@ module.exports = {
     options: [],
     default_member_permissions: "Administrator",
     run: async (client, interaction) => {
+        let blackliste = await blModel.findOne({ adshare: "adshare" });
+        if (!blackliste) await blModel.create({
+            adshare: "adshare",
+            servers: [],
+        });
+
+        blackliste = await blModel.findOne({ adshare: "adshare" });
+        if (blackliste.servers.includes(interaction.guild.id)) {
+            return interaction.reply({ content: `Votre serveur à été blacklist, rendez-vous sur le support pour connaître la raison de cela, faites /help puis cliquez sur le bouton support pour y accéder.`, ephemeral: true });
+        }
         const perms = checkPerms(client, interaction)
         if (!perms) {
             return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
@@ -82,6 +93,7 @@ module.exports = {
             "12H": timeData.douze,
             "24H": timeData.vingtquatre
         };
+
         const findGuildHour = (guildId) => {
             for (const [hour, guildIds] of Object.entries(hoursMap)) {
                 if (guildIds.includes(guildId)) {
