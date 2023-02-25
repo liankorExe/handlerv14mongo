@@ -79,7 +79,7 @@ module.exports = {
                     const invite = await interaction.guild.invites.create(serverSettings.salonpub, {
                         unique: true,
                         maxUses: 1
-                    })
+                    });
                     const buttonChoix = new ActionRowBuilder()
                         .addComponents(
                             new ButtonBuilder()
