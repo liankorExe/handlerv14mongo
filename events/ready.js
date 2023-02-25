@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const cron = require('node-cron');
 const timeModel = require('../schemas/timeArrayTable');
 const serverModel = require('../schemas/serverSettings');
-const { PermissionsBitField, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { PermissionsBitField, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 
 
 client.on('ready', async () => {
@@ -70,8 +70,8 @@ async function sendServers(delay) {
         "general": timeData.general,
     }[delay];
 
-    const receivingServersIds = shuffleNoDuplicates(sendingServersIds);
-    sendingServersIds.forEach(async (senderServerId, index) => {
+    const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
+    await sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
         if(!receiverServerGuild) {
             return console.log(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`);
@@ -93,26 +93,33 @@ async function sendServers(delay) {
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
         const senderChannelId = delay=="general" ? senderServerSettings.salongeneral : senderServerSettings.salonpub;
-        const inviteLink = senderServer.channels.cache.get(senderChannelId).createInvite({ maxAge: 7 * 24 * 60 * 60 });
+        const inviteLink = await senderServer.channels.cache.get(senderChannelId).createInvite({ maxAge: 7 * 24 * 60 * 60 })
+        .catch((error) => console.log(error, senderServer));
         try{
             await receiverChannel.send({
                 embeds: [
                     new EmbedBuilder()
                     .setTitle(senderServer.name)
-                    .setURL(inviteLink)
+                    .setURL(inviteLink.url)
                     .setDescription(senderServerSettings.description)
                     .setThumbnail(senderServer.iconURL({ size: 1024 }))
                 ],
                 components: [
-                    new ButtonBuilder()
-                        .setLabel('Rejoindre le serveur')
-                        .setStyle(ButtonStyle.Link)
-                        .setURL(inviteLink)
-                        .setEmoji('1063501870540275782')
+                    new ActionRowBuilder()
+                        .setComponents([
+                            new ButtonBuilder()
+                                .setLabel('Rejoindre le serveur')
+                                .setStyle(ButtonStyle.Link)
+                                .setURL(inviteLink.url)
+                                .setEmoji('1063501870540275782')
+                        ])
                 ]
             })
-        } catch(error){}
+        } catch(error){
+            console.log(error);
+        }
     });
+    console.log(`[SENDER] Finished sending ${delay} delay servers`)
     
 
 };
@@ -120,7 +127,7 @@ async function sendServers(delay) {
 /**
  * 
  * @param {Array} array 
- * @returns {Array}
+ * @returns {Array} (shuffled, with no element in the samme place it previously was)
  */
 function shuffleNoDuplicates(array) {
     const originalArray = [...array];
