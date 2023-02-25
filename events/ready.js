@@ -13,7 +13,7 @@ client.on('ready', async () => {
     const mongo = process.env.MONGO;
 
     if (!mongo) {
-        console.log("[WARN] L'url de mongodb n'est pas bon !");
+        console.log(chalk.red("[WARN] L'url de mongodb n'est pas bon !"));
     } else {
         mongoose.connect(mongo, {
             useNewUrlParser: true,
@@ -21,7 +21,7 @@ client.on('ready', async () => {
         }).catch((e) => console.log(e));
 
         mongoose.connection.once("open", () => {
-            console.log("[DATABASE] Connected to MongoDB!");
+            console.log(chalk.green("[DATABASE] Connected to MongoDB!"));
         });
     };
 
@@ -58,7 +58,7 @@ client.on('ready', async () => {
  * @param {String} delay 
  */
 async function sendServers(delay) {
-    console.log(`[SENDER] Started sending ${delay} delay servers`)
+    console.log(chalk.blue(`[SENDER] Started sending ${delay} delay servers`))
     const timeData = await timeModel.findOne({ searchInDb: "adshare" });
     const sendingServersIds = {
         "2H": timeData.deux,
@@ -70,11 +70,12 @@ async function sendServers(delay) {
         "general": timeData.general,
     }[delay];
 
+    if(sendingServersIds.length==0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
     const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
     await sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
         if(!receiverServerGuild) {
-            return console.log(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`);
+            return console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
         };
 
         const receiverServerSettings = await serverModel.findOne({ serverID: receiverServerGuild.id });
@@ -82,13 +83,13 @@ async function sendServers(delay) {
 
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverChannelId);
         if(!receiverChannel) {
-            return console.log(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`);
+            return console.log(chalk.red(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`));
         }
-        if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return console.log({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !` });
+        if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return console.log(chalk.red(`[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`));
 
         const senderServer = await client.guilds.cache.get(senderServerId);
         if(!senderServer) {
-            return console.log(`[SENDER] Receiver server ${senderServerId} not found, skipping`);
+            return console.log(chalk.red(`[SENDER] Receiver server ${senderServerId} not found, skipping`));
         };
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
@@ -119,7 +120,7 @@ async function sendServers(delay) {
             console.log(error);
         }
     });
-    console.log(`[SENDER] Finished sending ${delay} delay servers`)
+    console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`))
     
 
 };
