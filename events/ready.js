@@ -58,6 +58,7 @@ client.on('ready', async () => {
  * @param {String} delay 
  */
 async function sendServers(delay) {
+    console.log(`[SENDER] Started sending ${delay} delay servers`)
     const timeData = await timeModel.findOne({ searchInDb: "adshare" });
     const sendingServersIds = {
         "2H": timeData.deux,
@@ -77,10 +78,11 @@ async function sendServers(delay) {
         };
 
         const receiverServerSettings = await serverModel.findOne({ serverID: receiverServerGuild.id });
+        const receiverChannelId = delay=="general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
 
-        const receiverChannel = await receiverServerGuild.channels.cache.get(receiverServerSettings.salonpub);
+        const receiverChannel = await receiverServerGuild.channels.cache.get(receiverChannelId);
         if(!receiverChannel) {
-            return console.log(`[SENDER] Receiver channel ${receiverServerSettings.salonpub} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`);
+            return console.log(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`);
         }
         if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return console.log({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !` });
 
@@ -90,7 +92,8 @@ async function sendServers(delay) {
         };
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
-        const inviteLink = "Generate invite link for sender server";
+        const senderChannelId = delay=="general" ? senderServerSettings.salongeneral : senderServerSettings.salonpub;
+        const inviteLink = senderServer.channels.cache.get(senderChannelId).createInvite({ maxAge: 7 * 24 * 60 * 60 });
         try{
             await receiverChannel.send({
                 embeds: [
