@@ -71,7 +71,7 @@ async function sendServers(delay) {
         "24H": timeData.vingtquatre,
         "general": timeData.general,
     }[delay];
-    const logchannel = await client.channels.cache.get(process.env.LOGCHANNEL);
+    const logchannel = await client.channels.cache.get(process.env.RUNCHANNEL);
 
     if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
     const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
