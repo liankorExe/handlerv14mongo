@@ -1,23 +1,25 @@
-const { Discord, EmbedBuilder, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require("discord.js")
+const { Discord, EmbedBuilder, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
 const timeModel = require("../../schemas/timeArrayTable");
+
 module.exports = {
     id: 'supprimer',
     permissions: [],
     run: async (client, interaction) => {
         let timeData = await timeModel.findOne({ searchInDb: "adshare" });
-        if (!timeData) await timeModel.create({
-            searchInDb: "adshare",
-            deux: [],
-            quatre: [],
-            six: [],
-            huit: [],
-            douze: [],
-            vingtquatre: [],
-            general: []
-        });
+        if (!timeData) {
+            await timeModel.create({
+                searchInDb: "adshare",
+                deux: [],
+                quatre: [],
+                six: [],
+                huit: [],
+                douze: [],
+                vingtquatre: [],
+                general: []
+            });
+        }
         timeData = await timeModel.findOne({ searchInDb: "adshare" });
-        const serverId = interaction.customId.split('_')[1]
-        //if (timeData.servers.includes(serverId)) return interaction.reply({ content: `Ce serveur est dans aucune listes de pubs !`, ephemeral: true });
+        const serverId = interaction.customId.split('_')[1];
 
         const arrayOfArrays = [
             timeData.deux,
@@ -35,17 +37,42 @@ module.exports = {
                 if (array.includes(serverId)) {
                     const index = array.indexOf(serverId);
                     array.splice(index, 1);
-                    presentIn.push(Object.keys(timeData).find(key => timeData[key] === array));
+                    const horaire = Object.keys(timeData).find(key => timeData[key] === array);
+                    console.log(horaire)
+                    switch (horaire) {
+                        case 'deux':
+                            presentIn.push('2H');
+                            break;
+                        case 'quatre':
+                            presentIn.push('4H');
+                            break;
+                        case 'six':
+                            presentIn.push('6H');
+                            break;
+                        case 'huit':
+                            presentIn.push('8H');
+                            break;
+                        case 'douze':
+                            presentIn.push('12H');
+                            break;
+                        case 'vingtquatre':
+                            presentIn.push('24H');
+                            break;
+                        case 'general':
+                            presentIn.push('général');
+                            break;
+                        default:
+                            break;
+                    }
                 }
             }
-
             if (presentIn.length === 0) {
                 return 'Le serveur n\'est pas présent dans les tableaux.';
             } else {
                 return `Le serveur était présent dans les tableaux suivants : ${presentIn.join(', ')}. et a été supprimé de ces tableaux !`;
             }
         }
-        const messages = removeFromArrays(serverId, timeData)
-        interaction.reply({ content: messages, ephemeral: true })
+        const messages = removeFromArrays(serverId, timeData);
+        interaction.reply({ content: messages, ephemeral: true });
     }
 };

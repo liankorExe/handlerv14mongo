@@ -25,7 +25,7 @@ client.on('ready', async () => {
         });
     };
 
-    //await sendServers("2H") // Use to trigger manual send
+    // await sendServers("2H") // Use to trigger manual send
 
     cron.schedule("0 */2 * * *", async () => {//Schedule des délais 2H
         await sendServers("2H");
@@ -78,15 +78,15 @@ async function sendServers(delay) {
     await sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerSettings = await serverModel.findOne({ serverID: receivingServersIds[index] });
         const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
-
+        const fetchedChannel = await client.channels.fetch(receiverChannelId)
         const boutonsOptions = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`blacklister_${receiverChannelId}`)
+                    .setCustomId(`blacklister_${fetchedChannel.guild.id}`)
                     .setLabel(`Blacklister`)
                     .setStyle(ButtonStyle.Danger),
                 new ButtonBuilder()
-                    .setCustomId(`supprimer_${receiverChannelId}`)
+                    .setCustomId(`supprimer_${fetchedChannel.guild.id}`)
                     .setLabel(`Supprimer`)
                     .setStyle(ButtonStyle.Danger),
             );
