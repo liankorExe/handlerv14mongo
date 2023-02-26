@@ -69,13 +69,15 @@ async function sendServers(delay) {
         "24H": timeData.vingtquatre,
         "general": timeData.general,
     }[delay];
+    const logchannel = await client.channels.cache.get(process.env.LOGCHANNEL);
 
     if(sendingServersIds.length==0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
     const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
     await sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
         if(!receiverServerGuild) {
-            return console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
+            console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
+            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping` });
         };
 
         const receiverServerSettings = await serverModel.findOne({ serverID: receiverServerGuild.id });
@@ -83,19 +85,27 @@ async function sendServers(delay) {
 
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverChannelId);
         if(!receiverChannel) {
-            return console.log(chalk.red(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`));
-        }
-        if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) return console.log(chalk.red(`[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`));
+            console.log(chalk.red(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`));
+            return logchannel.send({ content: `[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping` });
+        };
+        if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) {
+            console.log(chalk.red(`[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`));
+            return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !` });
+        };
 
         const senderServer = await client.guilds.cache.get(senderServerId);
         if(!senderServer) {
-            return console.log(chalk.red(`[SENDER] Receiver server ${senderServerId} not found, skipping`));
+            console.log(chalk.red(`[SENDER] Receiver server ${senderServerId} not found, skipping`));
+            return logchannel.send({ content: `[SENDER] Receiver server ${senderServerId} not found, skipping` });
         };
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
         const senderChannelId = delay=="general" ? senderServerSettings.salongeneral : senderServerSettings.salonpub;
         const inviteLink = await senderServer.channels.cache.get(senderChannelId).createInvite({ maxAge: 7 * 24 * 60 * 60 })
-        .catch((error) => console.log(error, senderServer));
+        .catch((error) => {
+            console.log(error)
+            return logchannel.send({ content: error.substring(0, 1000) })
+        });
         try{
             await receiverChannel.send({
                 embeds: [
@@ -117,7 +127,8 @@ async function sendServers(delay) {
                 ]
             })
         } catch(error){
-            console.log(error);
+            console.log(error)
+            return logchannel.send({ content: error.substring(0, 1000) })
         }
     });
     console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`))
