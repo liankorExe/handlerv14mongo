@@ -4,7 +4,7 @@ const checkPerms = require("../../functions")
 
 module.exports = {
     id: 'general-button',
-    permissions: [],
+    permissions: ["Administrator"],
     run: async (client, interaction) => {
         const perms = checkPerms(client, interaction)
         if (!perms) {
