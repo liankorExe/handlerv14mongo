@@ -21,7 +21,7 @@ module.exports = {
         timeData = await timeModel.findOne({ searchInDb: "adshare" });
         const serverId = interaction.customId.split('_')[1];
         const messages = removeFromArrays(serverId, timeData);
-        interaction.reply({ content: messages, ephemeral: true });
+        await interaction.reply({ content: messages, ephemeral: true });
     }
 };
 
@@ -35,13 +35,13 @@ function removeFromArrays(serverId, timeData) {
         timeData.vingtquatre,
         timeData.general
     ];
+    const arrayNames = ["2H", "4H", "6H", "8H", "12H", "14H", "general"]
     const presentIn = [];
 
     arrayOfArrays.forEach((array, index) => {
         if (array.includes(serverId)) {
-            array.splice(index, 1);
-            const horaire = Object.keys(timeData)[index];
-            console.log(horaire)
+            array.splice(array.indexOf(serverId), 1);
+            const horaire = arrayNames[index];
             switch (horaire) {
                 case 'deux':
                     presentIn.push('2H');
