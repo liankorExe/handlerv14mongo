@@ -71,49 +71,61 @@ async function sendServers(delay) {
     }[delay];
     const logchannel = await client.channels.cache.get(process.env.LOGCHANNEL);
 
-    if(sendingServersIds.length==0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
+    if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
     const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
     await sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
-        if(!receiverServerGuild) {
+        if (!receiverServerGuild) {
             console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping` });
+            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [boutonsOptions] });
         };
 
         const receiverServerSettings = await serverModel.findOne({ serverID: receiverServerGuild.id });
-        const receiverChannelId = delay=="general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
+        const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
+
+        const boutonsOptions = new ActionRowBuilder()
+            .addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`blacklister_${receiverChannelId}`)
+                    .setLabel(`Blacklister`)
+                    .setStyle(ButtonStyle.Secondary),
+                new ButtonBuilder()
+                    .setCustomId(`supprimer_${receiverChannelId}`)
+                    .setLabel(`Supprimer`)
+                    .setStyle(ButtonStyle.Secondary),
+            );
 
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverChannelId);
-        if(!receiverChannel) {
+        if (!receiverChannel) {
             console.log(chalk.red(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping` });
+            return logchannel.send({ content: `[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`, components: [boutonsOptions] });
         };
-        if(!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) {
+        if (!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) {
             console.log(chalk.red(`[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`));
-            return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !` });
+            return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [boutonsOptions] });
         };
 
         const senderServer = await client.guilds.cache.get(senderServerId);
-        if(!senderServer) {
+        if (!senderServer) {
             console.log(chalk.red(`[SENDER] Receiver server ${senderServerId} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver server ${senderServerId} not found, skipping` });
+            return logchannel.send({ content: `[SENDER] Receiver server ${senderServerId} not found, skipping`, components: [boutonsOptions] });
         };
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
-        const senderChannelId = delay=="general" ? senderServerSettings.salongeneral : senderServerSettings.salonpub;
+        const senderChannelId = delay == "general" ? senderServerSettings.salongeneral : senderServerSettings.salonpub;
         const inviteLink = await senderServer.channels.cache.get(senderChannelId).createInvite({ maxAge: 7 * 24 * 60 * 60 })
-        .catch((error) => {
-            console.log(error)
-            return logchannel.send({ content: error.substring(0, 1000) })
-        });
-        try{
+            .catch((error) => {
+                console.log(error)
+                return logchannel.send({ content: error.substring(0, 1000) })
+            });
+        try {
             await receiverChannel.send({
                 embeds: [
                     new EmbedBuilder()
-                    .setTitle(senderServer.name)
-                    .setURL(inviteLink.url)
-                    .setDescription(senderServerSettings.description)
-                    .setThumbnail(senderServer.iconURL({ size: 1024 }))
+                        .setTitle(senderServer.name)
+                        .setURL(inviteLink.url)
+                        .setDescription(senderServerSettings.description)
+                        .setThumbnail(senderServer.iconURL({ size: 1024 }))
                 ],
                 components: [
                     new ActionRowBuilder()
@@ -126,13 +138,13 @@ async function sendServers(delay) {
                         ])
                 ]
             })
-        } catch(error){
+        } catch (error) {
             console.log(error)
             return logchannel.send({ content: error.substring(0, 1000) })
         }
     });
     console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`))
-    
+
 
 };
 
