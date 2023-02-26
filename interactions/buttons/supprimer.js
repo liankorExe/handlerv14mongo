@@ -17,7 +17,7 @@ module.exports = {
         });
         timeData = await timeModel.findOne({ searchInDb: "adshare" });
         const serverId = interaction.customId.split('_')[1]
-        if (timeData.servers.includes(serverId)) return interaction.reply({ content: `Ce serveur est dans aucune listes de pubs !`, ephemeral: true })
+        //if (timeData.servers.includes(serverId)) return interaction.reply({ content: `Ce serveur est dans aucune listes de pubs !`, ephemeral: true });
 
         const arrayOfArrays = [
             timeData.deux,

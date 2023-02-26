@@ -25,6 +25,8 @@ client.on('ready', async () => {
         });
     };
 
+    //await sendServers("2H") // Use to trigger manual send
+
     cron.schedule("0 */2 * * *", async () => {//Schedule des délais 2H
         await sendServers("2H");
     });
@@ -74,13 +76,7 @@ async function sendServers(delay) {
     if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
     const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
     await sendingServersIds.forEach(async (senderServerId, index) => {
-        const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
-        if (!receiverServerGuild) {
-            console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [boutonsOptions] });
-        };
-
-        const receiverServerSettings = await serverModel.findOne({ serverID: receiverServerGuild.id });
+        const receiverServerSettings = await serverModel.findOne({ serverID: receivingServersIds[index] });
         const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
 
         const boutonsOptions = new ActionRowBuilder()
@@ -88,12 +84,19 @@ async function sendServers(delay) {
                 new ButtonBuilder()
                     .setCustomId(`blacklister_${receiverChannelId}`)
                     .setLabel(`Blacklister`)
-                    .setStyle(ButtonStyle.Secondary),
+                    .setStyle(ButtonStyle.Danger),
                 new ButtonBuilder()
                     .setCustomId(`supprimer_${receiverChannelId}`)
                     .setLabel(`Supprimer`)
-                    .setStyle(ButtonStyle.Secondary),
+                    .setStyle(ButtonStyle.Danger),
             );
+
+        const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
+        if (!receiverServerGuild) {
+            console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
+            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [boutonsOptions] });
+        };
+
 
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverChannelId);
         if (!receiverChannel) {
