@@ -144,7 +144,7 @@ async function sendServers(delay) {
                     new EmbedBuilder()
                         .setTitle(senderServer.name)
                         .setURL(inviteLink.url)
-                        .setDescription(senderServerSettings.description)
+                        .setDescription(senderServerSettings.description.replace(/\${back}/g, "\n"))
                         .setThumbnail(senderServer.iconURL({ size: 1024 }))
                 ],
                 components: [
