@@ -6,7 +6,7 @@ const checkPerms = require("../../functions")
 
 module.exports = {
     id: 'selectgeneralmenu',
-    permissions: [],
+    permissions: ["Administrator"],
     run: async (client, interaction) => {
         let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id })
         if (!serverSettings) {

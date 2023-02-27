@@ -71,22 +71,21 @@ async function sendServers(delay) {
         "24H": timeData.vingtquatre,
         "general": timeData.general,
     }[delay];
-    const logchannel = await client.channels.cache.get(process.env.LOGCHANNEL);
+    const logchannel = await client.channels.cache.get(process.env.RUNCHANNEL);
 
     if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
     const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
     await sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerSettings = await serverModel.findOne({ serverID: receivingServersIds[index] });
         const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
-        const fetchedChannel = await client.channels.fetch(receiverChannelId)
-        const boutonsOptions = new ActionRowBuilder()
+        const receiverBoutonsOptions = new ActionRowBuilder()
             .addComponents(
                 new ButtonBuilder()
-                    .setCustomId(`blacklister_${fetchedChannel.guild.id}`)
+                    .setCustomId(`blacklister_${receivingServersIds[index]}`)
                     .setLabel(`Blacklister`)
                     .setStyle(ButtonStyle.Danger),
                 new ButtonBuilder()
-                    .setCustomId(`supprimer_${fetchedChannel.guild.id}`)
+                    .setCustomId(`supprimer_${receivingServersIds[index]}`)
                     .setLabel(`Supprimer`)
                     .setStyle(ButtonStyle.Danger),
             );
@@ -94,24 +93,42 @@ async function sendServers(delay) {
         const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
         if (!receiverServerGuild) {
             console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [boutonsOptions] });
+            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [receiverBoutonsOptions] });
         };
 
 
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverChannelId);
         if (!receiverChannel) {
             console.log(chalk.red(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`, components: [boutonsOptions] });
+            return logchannel.send({ content: `[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`, components: [receiverBoutonsOptions] });
         };
         if (!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) {
             console.log(chalk.red(`[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`));
-            return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [boutonsOptions] });
+            return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [receiverBoutonsOptions] });
         };
+        if(!receiverServerSettings.lastMessageUrl=="null") {
+            try {
+                const discordLinkReg = /https?:(?:www\.)?\/\/discord(?:app)?\.com\/channels\/(\d{18})\/(\d{18})\/(\d{18})/g;
+                const [, guildId, channelId, messageId] = discordLinkReg.exec(receiverServerSettings.lastMessageUrl);
+                const oldMsg = await client.channels.cache.get(channelId)?.messages?.fetch(messageId);
+                if(!oldMsg){
+                    console.log(chalk.red(`[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`));
+                    return logchannel.send({ content: `[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`, components: [receiverBoutonsOptions] });
+                }
+            } catch (error) {
+                console.log(chalk.red(`[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`));
+                return logchannel.send({ content: `[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`, components: [receiverBoutonsOptions] });
+            }
+        }
+
+        const guild = await client.guilds.fetch(guildId);
+        const channel = await client.channels.fetch(channelId);
+        const message = await channel.messages.fetch(messageId);
 
         const senderServer = await client.guilds.cache.get(senderServerId);
         if (!senderServer) {
             console.log(chalk.red(`[SENDER] Receiver server ${senderServerId} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver server ${senderServerId} not found, skipping`, components: [boutonsOptions] });
+            return logchannel.send({ content: `[SENDER] Receiver server ${senderServerId} not found, skipping`, components: [receiverBoutonsOptions] });
         };
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
@@ -122,7 +139,7 @@ async function sendServers(delay) {
                 return logchannel.send({ content: error.substring(0, 1000) })
             });
         try {
-            await receiverChannel.send({
+            const messageUrl = await receiverChannel.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(senderServer.name)
@@ -140,13 +157,18 @@ async function sendServers(delay) {
                                 .setEmoji('1063501870540275782')
                         ])
                 ]
-            })
+            })?.url
+            if(messageUrl) await senderServerSettings.findOneAndUpdate(
+                { serverID: receiverServerGuild.id },
+                { lastMessageUrl: messageUrl }
+            );
+            
         } catch (error) {
             console.log(error)
-            return logchannel.send({ content: error.substring(0, 1000) })
+            return logchannel.send({ content: error.substring(0, 1000) });
         }
     });
-    console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`))
+    console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`));
 
 
 };
