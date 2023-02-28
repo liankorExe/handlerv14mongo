@@ -108,20 +108,6 @@ async function sendServers(delay) {
             console.log(chalk.red(`[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`));
             return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [receiverBoutonsOptions] });
         };
-        if(!receiverServerSettings.lastMessageUrl=="null") {
-            try {
-                const discordLinkReg = /https?:(?:www\.)?\/\/discord(?:app)?\.com\/channels\/(\d{18})\/(\d{18})\/(\d{18})/g;
-                const [, guildId, channelId, messageId] = discordLinkReg.exec(receiverServerSettings.lastMessageUrl);
-                const oldMsg = await client.channels.cache.get(channelId)?.messages?.fetch(messageId);
-                if(!oldMsg){
-                    console.log(chalk.red(`[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`));
-                    return logchannel.send({ content: `[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`, components: [receiverBoutonsOptions] });
-                }
-            } catch (error) {
-                console.log(chalk.red(`[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`));
-                return logchannel.send({ content: `[SENDER] Last message in ${receiverServerGuild.name} (${receiverServerGuild.id}) was deleted !`, components: [receiverBoutonsOptions] });
-            }
-        }
 
         const senderServer = await client.guilds.cache.get(senderServerId);
         if (!senderServer) {
@@ -137,7 +123,7 @@ async function sendServers(delay) {
                 return logchannel.send({ content: error.substring(0, 1000) })
             });
         try {
-            const messageUrl = await receiverChannel.send({
+            await receiverChannel.send({
                 embeds: [
                     new EmbedBuilder()
                         .setTitle(senderServer.name)
@@ -155,11 +141,7 @@ async function sendServers(delay) {
                                 .setEmoji('1063501870540275782')
                         ])
                 ]
-            })?.url
-            if(messageUrl) await senderServerSettings.findOneAndUpdate(
-                { serverID: receiverServerGuild.id },
-                { lastMessageUrl: messageUrl }
-            );
+            });
             
         } catch (error) {
             console.log(error)
