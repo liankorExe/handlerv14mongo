@@ -3,10 +3,11 @@ const blModel = require("../../../schemas/blacklist");
 const checkPerms = require("../../../functions")
 
 module.exports = {
-    name: "blackliste",
-    description: "Ajoute ou retire un serveur de la blackliste",
+    name: "blacklist",
+    description: "Ajoute ou retire un serveur de la blacklist",
     options: [],
     default_member_permissions: "Administrator",
+    guild: true,
     run: async (client, interaction) => {
         let owners = ["533306566229753878", "837034549434777702"]
         if (!owners.includes(interaction.user.id)) return interaction.reply({ content: `Tu n'es pas owner !` })
