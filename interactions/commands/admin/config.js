@@ -115,7 +115,7 @@ module.exports = {
                 { name: `🏷 Salon général`, value: serverSettings.salongeneral === "null" ? "Non défini" : `<#${serverSettings.salongeneral}>`, inline: true },
                 { name: `🕐 Délai`, value: "12H", inline: true },
                 { name: '\u200B', value: '\u200B' },
-                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : `${serverSettings.description.replace(/\${back}/g, "\n")}`, inline: false },
+                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : serverSettings.description.replace(/\${back}/g, "\n"), inline: false },
             )
             .setColor(process.env.COLOR);
 
