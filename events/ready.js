@@ -123,10 +123,6 @@ async function sendServers(delay) {
             }
         }
 
-        const guild = await client.guilds.fetch(guildId);
-        const channel = await client.channels.fetch(channelId);
-        const message = await channel.messages.fetch(messageId);
-
         const senderServer = await client.guilds.cache.get(senderServerId);
         if (!senderServer) {
             console.log(chalk.red(`[SENDER] Receiver server ${senderServerId} not found, skipping`));
