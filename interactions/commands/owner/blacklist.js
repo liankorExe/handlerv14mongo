@@ -8,7 +8,7 @@ module.exports = {
     options: [],
     default_member_permissions: "Administrator",
     run: async (client, interaction) => {
-        let owners = ["533306566229753878", "837034549434777702"]
+        let owners = ["533306566229753878", "837034549434777702", "697438073646088194"]
         if (!owners.includes(interaction.user.id)) return interaction.reply({ content: `Tu n'es pas owner !` })
         const perms = checkPerms(client, interaction)
         if (!perms) {
