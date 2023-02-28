@@ -74,7 +74,9 @@ async function sendServers(delay) {
     const logchannel = await client.channels.cache.get(process.env.RUNCHANNEL);
 
     if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
-    const receivingServersIds = shuffleNoDuplicates([...sendingServersIds]);
+    let receivingServersIds = [...sendingServersIds];
+    shuffleNoDuplicates(receivingServersIds);
+    
     await sendingServersIds.forEach(async (senderServerId, index) => {
         const receiverServerSettings = await serverModel.findOne({ serverID: receivingServersIds[index] });
         const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
@@ -179,21 +181,10 @@ async function sendServers(delay) {
  * @returns {Array} (shuffled, with no element in the samme place it previously was)
  */
 function shuffleNoDuplicates(array) {
-    const originalArray = [...array];
-    let m = array.length;
-    while (m > 1) {
-        let i;
-        do {
-            i = Math.floor(Math.random() * m);
-        } while (array[i] === originalArray[m - 1]);
-        m--;
-        const t = array[m];
-        array[m] = array[i];
-        array[i] = t;
-
-        if (array[0] === originalArray[0]) {
-            [array[0], [array[1]]] = [array[1], [array[0]]];
-        }
-        return array;
-    }
+  for(var i = items.length; i-- > 1; ) {
+    var j = Math.floor(Math.random() * i);
+    var tmp = items[i];
+    items[i] = items[j];
+    items[j] = tmp;
+  }
 }
