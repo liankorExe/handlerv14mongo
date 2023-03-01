@@ -1,6 +1,7 @@
 const client = require('..');
 const { EmbedBuilder, ButtonBuilder, ActionRowBuilder, ButtonStyle, Discord } = require("discord.js");
 const serverModel = require("../schemas/serverSettings");
+const chalk = require('chalk');
 
 client.on('messageDelete', async (message) => {
     console.log(message)
