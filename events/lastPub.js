@@ -2,7 +2,8 @@ const client = require('..');
 const { EmbedBuilder, Discord } = require("discord.js");
 const serverModel = require("../schemas/serverSettings");
 
-client.on('messageDelete', async (message) => {
+client.on('messageDelete', async (message) => 
+    console.log(message)
     const receiverBoutonsOptions = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
