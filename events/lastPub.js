@@ -4,7 +4,6 @@ const serverModel = require("../schemas/serverSettings");
 const chalk = require('chalk');
 
 client.on('messageDelete', async (message) => {
-    console.log(message)
     const receiverBoutonsOptions = new ActionRowBuilder()
         .addComponents(
             new ButtonBuilder()
