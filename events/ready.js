@@ -158,7 +158,7 @@ async function sendServers(delay) {
  * @param {Array} array 
  * @returns {Array} (shuffled, with no element in the samme place it previously was)
  */
-function shuffleNoDuplicates(array) {
+function shuffleNoDuplicates(items) {
   for(var i = items.length; i-- > 1; ) {
     var j = Math.floor(Math.random() * i);
     var tmp = items[i];
