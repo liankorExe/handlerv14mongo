@@ -17,7 +17,7 @@ client.on('messageDelete', async (message) => {
         );
     if(message?.components[0]?.components[0]?.label=='Rejoindre le serveur'){
         const logchannel = await client.channels.cache.get(process.env.RUNCHANNEL);
-        console.log(chalk.red(`[SENDER] Last message in ${message?.guild?.name} (${message?.guild?.id}) was deleted !`));
-        return logchannel.send({ content: `[SENDER] Last message in ${message?.guild?.name} (${message?.guild?.id}) was deleted !`, components: [receiverBoutonsOptions] });
+        console.log(chalk.red(`[WATCHER] Last message in ${message?.guild?.name} (${message?.guild?.id}) was deleted !`));
+        return logchannel.send({ content: `[WATCHER] Last message in ${message?.guild?.name} (${message?.guild?.id}) was deleted !`, components: [receiverBoutonsOptions] });
     };
 });
