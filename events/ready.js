@@ -92,7 +92,7 @@ async function sendServers(delay) {
                     .setStyle(ButtonStyle.Danger),
             );
 
-        const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
+        const receiverServerGuild = await client.guilds.fetch(receivingServersIds[index]);
         if (!receiverServerGuild) {
             console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
             return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [receiverBoutonsOptions] });
