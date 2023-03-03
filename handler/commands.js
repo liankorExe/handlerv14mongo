@@ -44,7 +44,7 @@ module.exports = async (client) => {
     try {
         await rest.put(Routes.applicationCommands(process.env.APPID), { body: globalSlashCommands });
         console.log(chalk.magenta(`GlobalSlashCommands Enregistrées`));
-        await rest.put(Routes.applicationGuildCommands(process.env.APPID, "1062758465161932812"), { body: globalSlashCommands });
+        await rest.put(Routes.applicationGuildCommands(process.env.APPID, "1062758465161932812"), { body: guildSlashCommands });
         console.log(chalk.magenta(`GuildSlashCommands Enregistrées`));
     } catch (error) {
         console.error(error);
