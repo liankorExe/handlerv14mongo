@@ -109,10 +109,10 @@ async function sendServers(delay) {
             return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [receiverBoutonsOptions] });
         };
 
-        const senderServer = await client.guilds.cache.get(senderServerId);
+        const senderServer = await client.guilds.fetch(senderServerId);
         if (!senderServer) {
-            console.log(chalk.red(`[SENDER] Receiver server ${senderServerId} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver server ${senderServerId} not found, skipping`, components: [receiverBoutonsOptions] });
+            console.log(chalk.red(`[SENDER] Sender server ${senderServerId} not found, skipping`));
+            return logchannel.send({ content: `[SENDER] Sender server ${senderServerId} not found, skipping`, components: [receiverBoutonsOptions] });
         };
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });

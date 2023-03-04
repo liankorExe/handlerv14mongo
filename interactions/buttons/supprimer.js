@@ -37,7 +37,7 @@ function removeFromArrays(serverId, timeData) {
         timeData.vingtquatre,
         timeData.general
     ];
-    const arrayNames = ["2H", "4H", "6H", "8H", "12H", "14H", "general"]
+    const arrayNames = ["2H", "4H", "6H", "8H", "12H", "24H", "general"]
     const presentIn = [];
 
     arrayOfArrays.forEach((array, index) => {
@@ -46,22 +46,22 @@ function removeFromArrays(serverId, timeData) {
             array.splice(array.indexOf(serverId), 1);
             const horaire = arrayNames[index];
             switch (horaire) {
-                case 'deux':
+                case '2H':
                     presentIn.push('2H');
                     break;
-                case 'quatre':
+                case '4H':
                     presentIn.push('4H');
                     break;
-                case 'six':
+                case '6H':
                     presentIn.push('6H');
                     break;
-                case 'huit':
+                case '8H':
                     presentIn.push('8H');
                     break;
-                case 'douze':
+                case '12H':
                     presentIn.push('12H');
                     break;
-                case 'vingtquatre':
+                case '24H':
                     presentIn.push('24H');
                     break;
                 case 'general':
