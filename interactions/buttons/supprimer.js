@@ -27,11 +27,11 @@ module.exports = {
                 new ActionRowBuilder()
                     .addComponents(
                         new ButtonBuilder()
-                            .setCustomId(`blacklister_${receivingServersIds[index]}`)
+                            .setCustomId(`blacklister_${serverId}`)
                             .setLabel(`Blacklister`)
                             .setStyle(ButtonStyle.Danger),
                         new ButtonBuilder()
-                            .setCustomId(`supprimer_${receivingServersIds[index]}`)
+                            .setCustomId(`supprimer_${serverId}`)
                             .setLabel(`Supprimer`)
                             .setStyle(ButtonStyle.Danger)
                             .setDisabled(true),
