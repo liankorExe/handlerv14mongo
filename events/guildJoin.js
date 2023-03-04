@@ -6,19 +6,25 @@ const timeModel = require('../schemas/timeArrayTable');
 client.on('guildCreate', async (guild) => {
     const embedJoin = new EmbedBuilder()
         .setTitle(`Join`)
-        .setDescription(`Le bot a rejoint le serveur **${guild.name}** (${guild.id})`)
+        .setDescription(`Le bot a rejoin le serveur **${guild.name}** \n 
+        ID du serveur\`\(${guild.id})\`\ \n\`${guild.memberCount}\`\  **Membres** 
+        \n ID du fondateurs \`\(${guild.ownerId})\`\ - <@${guild.ownerId}> `)
+        .setThumbnail(guild.iconURL())
         .setColor(`Green`)
-    const channel = await client.channels.fetch(process.env.NEWGUILDCHANNEL)
+    const channel = await client.channels.fetch('1077673611185356821')
     if (channel) return channel.send({ embeds: [embedJoin] })
 });
 
 client.on('guildDelete', async (guild) => {
     const embedJoin = new EmbedBuilder()
-        .setTitle(`Join`)
-        .setDescription(`Le bot a quitté le serveur **${guild.name}** (${guild.id})`)
+        .setTitle(`Leave`)
+        .setDescription(`Le bot a rejoin le serveur **${guild.name}** \n 
+        ID du serveur\`\(${guild.id})\`\ \n\`${guild.memberCount}\`\  **Membres** 
+        \n ID du fondateurs \`\(${guild.ownerId})\`\ - <@${guild.ownerId}> `)
+        .setThumbnail(guild.iconURL())
         .setColor(`Red`)
-    const channel = await client.channels.fetch(process.env.NEWGUILDCHANNEL);
-    if (channel) return channel.send({ embeds: [embedJoin] });
+    const channel = await client.channels.fetch('1077673611185356821')
+    if (channel) return channel.send({ embeds: [embedJoin] })
 
     const timeData = await timeModel.findOne({ searchInDb: "adshare" });
     removeFromArrays(guild.id, timeData)
@@ -75,3 +81,4 @@ function removeFromArrays(serverId, timeData) {
         return `Le serveur était présent dans les tableaux suivants : ${presentIn.join(', ')}. et a été supprimé de ces tableaux !`;
     }
 }
+

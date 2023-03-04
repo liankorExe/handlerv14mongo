@@ -9,6 +9,12 @@ const { PermissionsBitField, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRow
 
 client.on('ready', async () => {
     console.log(chalk.red(`${client.user.tag} prêt a pub ! 📌`));
+    let server = await client.guilds.cache.size
+    let servercount = await client.guilds.cache.reduce((a,b) => a+b.memberCount, 0  )
+    client.user.setStatus('online');
+    client.user.setActivity(`/config - ${servercount}`)
+    
+    
 
     const mongo = process.env.MONGO;
 
