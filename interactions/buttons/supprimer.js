@@ -1,4 +1,4 @@
-const { Discord, EmbedBuilder, ModalBuilder, ActionRowBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
+const { ActionRowBuilder } = require("discord.js");
 const timeModel = require("../../schemas/timeArrayTable");
 
 module.exports = {
