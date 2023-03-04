@@ -8,7 +8,7 @@ module.exports = {
     run: async (client, interaction) => {
         const perms = checkPerms(client, interaction)
         if (!perms) {
-            return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Créer des invitations`, ephemeral: true })
         }
         const timeData = await timeModel.findOne({ searchInDb: "adshare" });
         if (interaction.guild.memberCount < 200) {
@@ -46,7 +46,7 @@ module.exports = {
             );
         const embeGeneral = new EmbedBuilder()
             .setTitle(`Général`)
-            .setColor(process.env.COLOR)
+            .setColor('#2f3136')
             .setDescription(`> Il y a actuellement **${timeData.general.length}** serveur(s) inscrit dans la catégorie général.`)
 
         interaction.reply({ embeds: [embeGeneral], components: [selectGeneralmenu, buttonInfo] })

@@ -29,7 +29,7 @@ module.exports = {
             ]);
         await interaction.showModal(serveurIdModal)
         const filter = (inter) => inter.customId === 'modalserveuridremove';
-        interaction.awaitModalSubmit({ filter, time: 60000 * 10 })
+        interaction.awaitModalSubmit({ filter, time: 60000 * 9999 })
             .then(async inter => {
                 await inter.deferUpdate()
                 const servid = await inter.fields.getTextInputValue('serveurId');

@@ -26,7 +26,7 @@ module.exports = {
         await interaction.showModal(descriptionMODAL)
         const filter = (inter) => inter.customId === 'descrejetmodal';
         await interaction.message.edit();
-        interaction.awaitModalSubmit({ filter, time: 60000 * 10 })
+        interaction.awaitModalSubmit({ filter, time: 60000 * 9999 })
             .then(async inter => {
                 await inter.deferUpdate()
                 const raison = await inter.fields.getTextInputValue('raison');
