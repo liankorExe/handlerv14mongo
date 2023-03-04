@@ -22,7 +22,7 @@ module.exports = {
         }
         const perms = checkPerms(client, interaction)
         if (!perms) {
-            return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n   \n<:valide:1063496508529459240> Créer une invitation \n<:valide:1063496508529459240> Envoyer des messages\n<:valide:1063496508529459240> Intégrer des liens\n<:valide:1063496508529459240> Joindre des fichiers \n<:valide:1063496508529459240> Utiliser des émojis externes.`, ephemeral: true })
         }
         let serverSettings = await serverModel.findOne({ serverID: interaction.guild.id });
         if (!serverSettings) await serverModel.create({
@@ -105,19 +105,19 @@ module.exports = {
 
         const guildHour = findGuildHour(interaction.guild.id);
         const embedConfig = new EmbedBuilder()
-            .setTitle(`⚙ Configuration`)
-            .setDescription(`\`\`\` \`\`\`\n\n> *Voici la configuration du serveur **${interaction.guild.name}***\n\n${serverSettings.description === "null" ? "Votre serveur à été refusé. 🔴" : "Votre serveur à été accepté. 🟢"}`)
+            .setTitle(`<:documents:1064012116996141197> Configuration`)
+            .setDescription(` *Voici la configuration du serveur **${interaction.guild.name}***\n\n${serverSettings.description === "null" ? "*Votre serveur est en attente d'acceptation* ``⌛``" : "*Votre serveur à été accepté.* ``🟢``"}`)
             .addFields(
                 { name: '\u200B', value: '\u200B' },
-                { name: `🏷 Salon publicitaire`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>`, inline: true },
-                { name: `🕐 Délai`, value: guildHour ?? "Non défini", inline: true },
+                { name: `\`\🏷️\`\ Salon publicitaire`, value: serverSettings.salonpub === "null" ? "Non défini" : `<#${serverSettings.salonpub}>`, inline: true },
+                { name: `\`\🕐\`\ Délai`, value: guildHour ?? "Non défini", inline: true },
                 { name: '\u200B', value: '\u200B' },
-                { name: `🏷 Salon général`, value: serverSettings.salongeneral === "null" ? "Non défini" : `<#${serverSettings.salongeneral}>`, inline: true },
-                { name: `🕐 Délai`, value: "12H", inline: true },
+                { name: `\`\🏷️\`\ Salon général`, value: serverSettings.salongeneral === "null" ? "Non défini" : `<#${serverSettings.salongeneral}>`, inline: true },
+                { name: `\`\🕐\`\ Délai`, value: "12H", inline: true },
                 { name: '\u200B', value: '\u200B' },
-                { name: `📌 Description`, value: serverSettings.description === "null" ? "Aucune description" : serverSettings.description.replace(/\${back}/g, "\n"), inline: false },
+                { name: `\`\📌\`\ Description`, value: serverSettings.description === "null" ? "Aucune description" : serverSettings.description.replace(/\${back}/g, "\n"), inline: false },
             )
-            .setColor(process.env.COLOR);
+            .setColor('Green');
 
         interaction.reply({ embeds: [embedConfig], components: [selectconfigmenu, buttonsOptions], allowedMentions: { parse: [] } });
     }

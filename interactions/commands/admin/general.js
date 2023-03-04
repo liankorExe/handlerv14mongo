@@ -17,11 +17,11 @@ module.exports = {
 
         blackliste = await blModel.findOne({ adshare: "adshare" });
         if (blackliste.servers.includes(interaction.guild.id)) {
-            return interaction.reply({ content: `Votre serveur à été blacklist, rendez-vous sur le support pour connaître la raison de cela, faites /help puis cliquez sur le bouton support pour y accéder.`, ephemeral: true });
+            return interaction.reply({ content: `Votre serveur à reçu une sanction, rendez-vous sur le support pour connaître la raison de cela, faites /help puis cliquez sur le bouton support pour y accéder.`, ephemeral: true });
         }
         const perms = checkPerms(client, interaction)
         if (!perms) {
-            return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n- Voir les salons\n- Envoyer des messages\n- Creer des invitations`, ephemeral: true })
+            return interaction.reply({ content: `Le bot a besoin de permissions suivante :\n\n   \n- Créer une invitation \n- Envoyer des messages\n- Intégrer des liens\n- Joindre des fichiers \n- Utiliser des émojis externes.`, ephemeral: true })
         }
         const timeData = await timeModel.findOne({ searchInDb: "adshare" });
         if (interaction.guild.memberCount < 200) {
@@ -59,7 +59,7 @@ module.exports = {
             );
         const embeGeneral = new EmbedBuilder()
             .setTitle(`Général`)
-            .setColor(process.env.COLOR)
+            .setColor('#2f3136')
             .setDescription(`> Il y a actuellement **${timeData.general.length}** serveur(s) inscrit dans la catégorie général.`)
 
         interaction.reply({ embeds: [embeGeneral], components: [selectGeneralmenu, buttonInfo] })
