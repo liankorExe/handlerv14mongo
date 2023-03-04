@@ -1,4 +1,4 @@
-const { ActionRowBuilder } = require("discord.js");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const timeModel = require("../../schemas/timeArrayTable");
 
 module.exports = {
@@ -22,7 +22,22 @@ module.exports = {
         const serverId = interaction.customId.split('_')[1];
         const messages = removeFromArrays(serverId, timeData);
         await interaction.reply({ content: messages, ephemeral: true });
-        await interaction.message.edit({ components: [ new ActionRowBuilder().setComponents([interaction.message.components[0].components[0].data]) ] })
+        await interaction.message.edit({
+            components: [
+                new ActionRowBuilder()
+                    .addComponents(
+                        new ButtonBuilder()
+                            .setCustomId(`blacklister_${receivingServersIds[index]}`)
+                            .setLabel(`Blacklister`)
+                            .setStyle(ButtonStyle.Danger),
+                        new ButtonBuilder()
+                            .setCustomId(`supprimer_${receivingServersIds[index]}`)
+                            .setLabel(`Supprimer`)
+                            .setStyle(ButtonStyle.Danger)
+                            .setDisabled(true),
+                    )
+            ]
+        });
     }
 };
 
@@ -40,7 +55,6 @@ function removeFromArrays(serverId, timeData) {
     const presentIn = [];
 
     arrayOfArrays.forEach((array, index) => {
-        console.log(array.includes(serverId))
         if (array.includes(serverId)) {
             array.splice(array.indexOf(serverId), 1);
             const horaire = arrayNames[index];
