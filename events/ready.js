@@ -9,15 +9,19 @@ const { PermissionsBitField, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRow
 
 client.on('ready', async () => {
     console.log(chalk.red(`${client.user.tag} prêt a pub ! 📌`));
-    let usercount = await client.guilds.cache.reduce((a,b) => a+b.memberCount, 0  );
     client.user.setStatus('online');
-    client.user.setActivity(`/config - ${usercount} utilisateurs`);
     
     setInterval(async () => {
-        let servercount = await client.guilds.cache.size;
+        const servercount = await client.guilds.cache.size;
         client.user.setActivity(`/config - ${servercount} serveurs`)    
-    }, 30000)
+    }, 60000);
 
+    setTimeout(async () => {
+        setInterval(async () => {
+            const usercount = await client.guilds.cache.reduce((a,b) => a+b.memberCount, 0  );  
+            client.user.setActivity(`/config - ${usercount} utilisateurs`);
+        }, 60000)
+    }, 30000);
     const mongo = process.env.MONGO;
 
     if (!mongo) {
