@@ -80,6 +80,14 @@ async function sendServers(delay) {
     const logchannel = await client.channels.cache.get(process.env.RUNCHANNEL);
 
     if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
+
+    await sendingServersIds.forEach(async(senderServerId) => {
+        const serverSettings = await serverModel.findOne({ serverID: senderServerId });
+        if(serverSettings.status==false){
+            sendingServersIds.splice(sendingServersIds.indexOf(senderServerId), 1)
+        };
+    });
+    
     let receivingServersIds = [...sendingServersIds];
     shuffleNoDuplicates(receivingServersIds);
     
