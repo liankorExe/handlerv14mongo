@@ -133,10 +133,16 @@ async function sendServers(delay) {
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
         const senderChannelId = delay == "general" ? senderServerSettings.salongeneral : senderServerSettings.salonpub;
-        const inviteLink = await senderServer.channels.cache.get(senderChannelId).createInvite({ maxAge: 7 * 24 * 60 * 60 })
+        const inviteChannel = await senderServer.channels.cache.get(senderChannelId);
+        if (!inviteChannel) {
+            console.log(chalk.red(`[SENDER] Sender channel ${receiverChannelId} (from server ${senderServer.name} - ${senderServer.id}) not found, skipping`));
+            return logchannel.send({ content: `[SENDER] Sender channel ${receiverChannelId} (from server ${senderServer.name} - ${senderServer.id}) not found, skipping`, components: [receiverBoutonsOptions] });
+        };
+
+        const inviteLink = await inviteChannel.createInvite({ maxAge: 7 * 24 * 60 * 60 })
             .catch((error) => {
                 console.log(error)
-                return logchannel.send({ content: error.substring(0, 1000) })
+                return logchannel.send({ content: String(error).substring(0, 1000) })
             });
         try {
             await receiverChannel.send({
@@ -161,7 +167,7 @@ async function sendServers(delay) {
             
         } catch (error) {
             console.log(error)
-            return logchannel.send({ content: error.substring(0, 1000) });
+            return logchannel.send({ content: String(error).substring(0, 1000) });
         }
     });
     console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`));
