@@ -20,7 +20,7 @@ module.exports = {
             timeData = await timeModel.findOne({ searchInDb: "adshare" });
         }
         const serverId = interaction.customId.split('_')[1];
-        const messages = removeFromArrays(serverId, timeData);
+        const messages = await removeFromArrays(serverId, timeData);
         await interaction.reply({ content: messages, ephemeral: true });
         await interaction.message.edit({
             components: [
