@@ -17,8 +17,8 @@ module.exports = {
                 vingtquatre: [],
                 general: []
             });
+            timeData = await timeModel.findOne({ searchInDb: "adshare" });
         }
-        timeData = await timeModel.findOne({ searchInDb: "adshare" });
         const serverId = interaction.customId.split('_')[1];
         const messages = removeFromArrays(serverId, timeData);
         await interaction.reply({ content: messages, ephemeral: true });
@@ -39,6 +39,7 @@ function removeFromArrays(serverId, timeData) {
     const presentIn = [];
 
     arrayOfArrays.forEach((array, index) => {
+        console.log(array.includes(serverId))
         if (array.includes(serverId)) {
             array.splice(array.indexOf(serverId), 1);
             const horaire = arrayNames[index];
