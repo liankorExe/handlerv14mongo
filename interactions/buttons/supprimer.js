@@ -22,7 +22,7 @@ module.exports = {
         const serverId = interaction.customId.split('_')[1];
         const messages = removeFromArrays(serverId, timeData);
         await interaction.reply({ content: messages, ephemeral: true });
-        await interaction.message.edit({ components: [ new ActionRowBuilder.setComponents([interaction.message.components[0].components[0].data]) ] })
+        await interaction.message.edit({ components: [ new ActionRowBuilder().setComponents([interaction.message.components[0].components[0].data]) ] })
     }
 };
 
