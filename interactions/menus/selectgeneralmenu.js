@@ -39,7 +39,7 @@ module.exports = {
                 ])
             await interaction.reply({ content: "Choisissez un salon", components: [channelMENU], ephemeral: true });
             const filter = (inter) => inter.customId === 'configselectmenuchannel' && inter.user.id === interaction.user.id;
-            interaction.channel.awaitMessageComponent({ filter, time: 60_000 })
+            interaction.channel.awaitMessageComponent({ filter, time: 60000 * 9999 })
                 .then(async inter => {
                     const id = inter.channels.first().id
                     inter.update({ content: `Vous avez sélectionné le salon <#${id}>`, components: [] });
