@@ -22,6 +22,8 @@ module.exports = {
         const serverId = interaction.customId.split('_')[1];
         const messages = removeFromArrays(serverId, timeData);
         await interaction.reply({ content: messages, ephemeral: true });
+        interaction.message.components[0].components[0].disabled = true
+        await interaction.message.edit({ components: [ interaction.message.components ] })
     }
 };
 
