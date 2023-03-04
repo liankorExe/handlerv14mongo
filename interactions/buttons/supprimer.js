@@ -22,8 +22,7 @@ module.exports = {
         const serverId = interaction.customId.split('_')[1];
         const messages = removeFromArrays(serverId, timeData);
         await interaction.reply({ content: messages, ephemeral: true });
-        interaction.message.components[0].components[0].disabled = true
-        await interaction.message.edit({ components: [ interaction.message.components ] })
+        await interaction.message.edit({ components: [ new ActionRowBuilder.setComponents([interaction.message.components[0].components[0].data]) ] })
     }
 };
 
@@ -75,6 +74,7 @@ function removeFromArrays(serverId, timeData) {
     if (presentIn.length === 0) {
         return 'Le serveur n\'est pas présent dans les tableaux.';
     } else {
+        timeData.save();
         return `Le serveur était présent dans les tableaux suivants : ${presentIn.join(', ')}. et a été supprimé de ces tableaux !`;
     }
 }
