@@ -87,7 +87,7 @@ async function sendServers(delay) {
             sendingServersIds.splice(sendingServersIds.indexOf(senderServerId), 1)
         };
     });
-    
+
     let receivingServersIds = [...sendingServersIds];
     shuffleNoDuplicates(receivingServersIds);
     
@@ -106,7 +106,7 @@ async function sendServers(delay) {
                     .setStyle(ButtonStyle.Danger),
             );
 
-        const receiverServerGuild = await client.guilds.fetch(receivingServersIds[index]);
+        const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
         if (!receiverServerGuild) {
             console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
             return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [receiverBoutonsOptions] });
@@ -123,7 +123,7 @@ async function sendServers(delay) {
             return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [receiverBoutonsOptions] });
         };
 
-        const senderServer = await client.guilds.fetch(senderServerId);
+        const senderServer = await client.guilds.cache.get(senderServerId);
         if (!senderServer) {
             console.log(chalk.red(`[SENDER] Sender server ${senderServerId} not found, skipping`));
             return logchannel.send({ content: `[SENDER] Sender server ${senderServerId} not found, skipping`, components: [receiverBoutonsOptions] });
