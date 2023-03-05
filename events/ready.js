@@ -87,7 +87,7 @@ async function sendServers(delay) {
 
     if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
 
-    for(let index = 0; i < sendingServersIds.length; ++index) {
+    for(let index = 0; index < sendingServersIds.length; ++index) {
         const senderServerId = sendingServersIds[index];
         const serverSettings = await serverModel.findOne({ serverID: senderServerId });
         if(serverSettings.status==false){
@@ -181,7 +181,6 @@ async function sendServers(delay) {
                         ])
                 ]
             });
-            
         } catch (error) {
             console.log(error)
             return logchannel.send({ content: `Erreur lors de l'envoi dans le salon <#${inviteChannel.id}> (${inviteChannel.id}) sur ${senderServer.name} (${senderServer.id}) -> ${String(error).substring(0, 1000)}`, components: [receiverBoutonsOptions] })
