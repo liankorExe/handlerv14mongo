@@ -6,21 +6,6 @@ module.exports = {
     id: 'desc-rejeter',
     permissions: [],
     run: async (client, interaction) => {
-        const descriptionMODAL = new ModalBuilder()
-            .setCustomId('descrejetmodal')
-            .setTitle('Raison du refus de la description')
-            .setComponents([
-                new ActionRowBuilder()
-                    .setComponents([
-                        new TextInputBuilder()
-                            .setCustomId("raison")
-                            .setLabel("Raison : ")
-                            .setMinLength(10)
-                            .setMaxLength(300)
-                            .setRequired(true)
-                            .setStyle(TextInputStyle.Paragraph)
-                    ])
-            ])
         const msgData = await descModel.findOne({ messageID: interaction.message.id });
         const serverSettings = await serverModel.findOne({ serverID: msgData.serverID })
         await interaction.showModal(descriptionMODAL)
@@ -50,3 +35,20 @@ module.exports = {
         await descModel.findOneAndDelete({ messageID: interaction.message.id });
     }
 };
+
+
+const descriptionMODAL = new ModalBuilder()
+    .setCustomId('descrejetmodal')
+    .setTitle('Raison du refus de la description')
+    .setComponents([
+        new ActionRowBuilder()
+            .setComponents([
+                new TextInputBuilder()
+                    .setCustomId("raison")
+                    .setLabel("Raison : ")
+                    .setMinLength(10)
+                    .setMaxLength(300)
+                    .setRequired(true)
+                    .setStyle(TextInputStyle.Paragraph)
+            ])
+    ])
