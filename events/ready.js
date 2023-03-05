@@ -98,7 +98,7 @@ async function sendServers(delay) {
     let receivingServersIds = [...sendingServersIds];
     shuffleNoDuplicates(receivingServersIds);
 
-    for(let index = 0; i < sendingServersIds.length; ++index) {
+    for(let index = 0; index < sendingServersIds.length; ++index) {
         const senderServerId = sendingServersIds[index];
         const receiverServerSettings = await serverModel.findOne({ serverID: receivingServersIds[index] });
         const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
