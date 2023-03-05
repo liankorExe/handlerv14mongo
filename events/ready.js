@@ -87,17 +87,19 @@ async function sendServers(delay) {
 
     if (sendingServersIds.length == 0) return console.log(chalk.yellow(`[SENDER] No server in ${delay} servers, skipping`));
 
-    await sendingServersIds.forEach(async(senderServerId) => {
+    for(let index = 0; i < sendingServersIds.length; ++index) {
+        const senderServerId = sendingServersIds[index];
         const serverSettings = await serverModel.findOne({ serverID: senderServerId });
         if(serverSettings.status==false){
             sendingServersIds.splice(sendingServersIds.indexOf(senderServerId), 1)
         };
-    });
+    };
 
     let receivingServersIds = [...sendingServersIds];
     shuffleNoDuplicates(receivingServersIds);
-    
-    await sendingServersIds.forEach(async (senderServerId, index) => {
+
+    for(let index = 0; i < sendingServersIds.length; ++index) {
+        const senderServerId = sendingServersIds[index];
         const receiverServerSettings = await serverModel.findOne({ serverID: receivingServersIds[index] });
         const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
         const receiverBoutonsOptions = new ActionRowBuilder()
@@ -184,7 +186,7 @@ async function sendServers(delay) {
             console.log(error)
             return logchannel.send({ content: `Erreur lors de l'envoi dans le salon <#${inviteChannel.id}> (${inviteChannel.id}) sur ${senderServer.name} (${senderServer.id}) -> ${String(error).substring(0, 1000)}`, components: [receiverBoutonsOptions] })
         }
-    });
+    }
     console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`));
 
 
