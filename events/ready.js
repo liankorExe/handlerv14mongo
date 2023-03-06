@@ -37,7 +37,7 @@ client.on('ready', async () => {
         });
     };
 
-    // await sendServers("general") // Use to trigger manual send
+    await sendServers("2H") // Use to trigger manual send
 
     cron.schedule("0 */2 * * *", async () => {//Schedule des délais 2H
         await sendServers("2H");
@@ -100,6 +100,7 @@ async function sendServers(delay) {
 
     for(let index = 0; index < sendingServersIds.length; ++index) {
         const senderServerId = sendingServersIds[index];
+        console.log(`sending server ${senderServerId}`)
         const receiverServerSettings = await serverModel.findOne({ serverID: receivingServersIds[index] });
         const receiverChannelId = delay == "general" ? receiverServerSettings.salongeneral : receiverServerSettings.salonpub;
         const receiverBoutonsOptions = new ActionRowBuilder()
@@ -128,24 +129,28 @@ async function sendServers(delay) {
         const receiverServerGuild = await client.guilds.cache.get(receivingServersIds[index]);
         if (!receiverServerGuild) {
             console.log(chalk.red(`[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [receiverBoutonsOptions] });
+            logchannel.send({ content: `[SENDER] Receiver server ${receivingServersIds[index]} not found, skipping`, components: [receiverBoutonsOptions] });
+            continue
         };
 
 
         const receiverChannel = await receiverServerGuild.channels.cache.get(receiverChannelId);
         if (!receiverChannel) {
             console.log(chalk.red(`[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`, components: [receiverBoutonsOptions] });
+            logchannel.send({ content: `[SENDER] Receiver channel ${receiverChannelId} (from server ${receiverServerGuild.name} - ${receiverServerGuild.id}) not found, skipping`, components: [receiverBoutonsOptions] });
+            continue
         };
         if (!receiverChannel.permissionsFor(await receiverServerGuild.members.fetchMe(), checkAdmin = true).has(PermissionsBitField.Flags.SendMessages)) {
             console.log(chalk.red(`[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`));
-            return logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [receiverBoutonsOptions] });
+            logchannel.send({ content: `[WARN] [SENDER] I didn't have permission to write in <#${receiverChannel.id}> on ${receiverServerGuild.name} (${receiverServerGuild.id}) !`, components: [receiverBoutonsOptions] });
+            continue
         };
 
         const senderServer = await client.guilds.cache.get(senderServerId);
         if (!senderServer) {
             console.log(chalk.red(`[SENDER] Sender server ${senderServerId} not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Sender server ${senderServerId} not found, skipping`, components: [senderBoutonsOptions] });
+            logchannel.send({ content: `[SENDER] Sender server ${senderServerId} not found, skipping`, components: [senderBoutonsOptions] });
+            continue
         };
 
         const senderServerSettings = await serverModel.findOne({ serverID: senderServer.id });
@@ -153,14 +158,19 @@ async function sendServers(delay) {
         const inviteChannel = await senderServer.channels.cache.get(senderChannelId);
         if (!inviteChannel) {
             console.log(chalk.red(`[SENDER] Sender channel ${senderChannelId} (from server ${senderServer.name} - ${senderServer.id}) not found, skipping`));
-            return logchannel.send({ content: `[SENDER] Sender channel ${senderChannelId} (from server ${senderServer.name} - ${senderServer.id}) not found, skipping`, components: [senderBoutonsOptions] });
+            logchannel.send({ content: `[SENDER] Sender channel ${senderChannelId} (from server ${senderServer.name} - ${senderServer.id}) not found, skipping`, components: [senderBoutonsOptions] });
+            continue
         };
+
+        const isError = false;
 
         const inviteLink = await inviteChannel.createInvite({ maxAge: 7 * 24 * 60 * 60 })
             .catch((error) => {
                 console.log(error)
-                return logchannel.send({ content: `Erreur lors de la création de l'invitation dans le salon <#${inviteChannel.id}> (${inviteChannel.id}) sur ${senderServer.name} (${senderServer.id}) -> ${String(error).substring(0, 1000)}`, components: [senderBoutonsOptions] });
+                isError=true
+                logchannel.send({ content: `Erreur lors de la création de l'invitation dans le salon <#${inviteChannel.id}> (${inviteChannel.id}) sur ${senderServer.name} (${senderServer.id}) -> ${String(error).substring(0, 1000)}`, components: [senderBoutonsOptions] });
             });
+        if(isError) continue
         try {
             await receiverChannel.send({
                 embeds: [
@@ -183,8 +193,9 @@ async function sendServers(delay) {
             });
         } catch (error) {
             console.log(error)
-            return logchannel.send({ content: `Erreur lors de l'envoi dans le salon <#${inviteChannel.id}> (${inviteChannel.id}) sur ${senderServer.name} (${senderServer.id}) -> ${String(error).substring(0, 1000)}`, components: [receiverBoutonsOptions] })
+            logchannel.send({ content: `Erreur lors de l'envoi dans le salon <#${inviteChannel.id}> (${inviteChannel.id}) sur ${senderServer.name} (${senderServer.id}) -> ${String(error).substring(0, 1000)}`, components: [receiverBoutonsOptions] })
         }
+        console.log(`finished sending server ${senderServerId}`)
     }
     console.log(chalk.blue(`[SENDER] Finished sending ${delay} delay servers`));
 
