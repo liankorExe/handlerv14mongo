@@ -1,6 +1,7 @@
 const client = require('..');
 const chalk = require('chalk');
 const mongoose = require('mongoose');
+const { app, port } = require("../dashboard/app")
 const cron = require('node-cron');
 const { PermissionsBitField, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 
@@ -35,5 +36,8 @@ client.on('ready', async () => {
         });
     };
 
+    app.listen(port, () => {
+        console.log(chalk.green("[DASHBOARD] Site en ligne"))
+    })
 
 });
