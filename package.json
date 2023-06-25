@@ -9,6 +9,7 @@
   "author": "CoolMan & Liankor",
   "license": "ISC",
   "dependencies": {
+    "@borane/expressapi": "^1.2.5",
     "ascii-table": "^0.0.9",
     "axios": "^1.3.3",
     "chalk": "2.4.2",
@@ -18,6 +19,7 @@
     "mongoose": "^6.9.1",
     "node-cron": "^3.0.2",
     "node-fetch": "^3.3.0",
-    "path": "^0.12.7"
+    "path": "^0.12.7",
+    "undici": "^5.22.1"
   }
 }

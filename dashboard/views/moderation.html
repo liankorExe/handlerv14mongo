@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DASHBOARD</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,1,0" />
+  </head>
+  <body>
+    <div class="content">
+      <div class="navbar">
+        <div class="navbar-boxbotname">
+          <h1 class="navbar-boxbotname-name">Eureka</h1>
+        </div>
+        <div class="navbar-buttons">
+          <span class="navbar-buttons-links" onclick="redirect('index.html')">
+            <span class="material-symbols-outlined"> dashboard </span>
+            <a href="index.html">Dashboard</a>
+          </span>
+          <span class="navbar-buttons-links"
+            ><span class="material-symbols-outlined"> person </span
+            ><a href="">Profile</a></span
+          >
+        </div>
+        <div class="navbar-search">
+          <input
+            id="search"
+            class="navbar-search-input"
+            type="text"
+            placeholder="Search.." />
+          <span class="material-symbols-outlined search-icon"> search </span>
+        </div>
+        <div class="navbar-plugins">
+          <span class="navbar-buttons-links active pl" onclick="redirect('bvn.html')">
+            <span class="material-symbols-outlined"> send </span>
+            <a href="#">Bienvenue et au revoir</a>
+          </span>
+          <span class="navbar-buttons-links pl" onclick="redirect('role.html')">
+            <span class="material-symbols-outlined"> palette </span>
+            <a href="#">Rôles-Réactions</a>
+          </span>
+          <span class="navbar-buttons-links pl" onclick="redirect('sondages.html')">
+            <span class="material-symbols-outlined "> how_to_vote </span>
+            <a href="#">Sondages</a>
+          </span>
+          <span class="navbar-buttons-links pl" onclick="redirect('moderation.html')">
+            <span class="material-symbols-outlined "> construction </span>
+            <a href="#">Modération</a>
+          </span>
+          <span class="navbar-buttons-links pl" onclick="redirect('ticket.html')">
+            <span class="material-symbols-outlined "> confirmation_number </span>
+            <a href="#">Ticket</a>
+          </span>
+          <span class="navbar-buttons-links pl" onclick="redirect('embed.html')">
+            <span class="material-symbols-outlined "> palette </span>
+            <a href="#">Messages embed</a>
+          </span>
+        </div>
+      </div>
+      <div class="dashboard">
+        <div class="direction">
+          <div class="direction-home">
+            <span class="material-symbols-outlined"> house </span>
+            <h3>Home</h3>
+          </div>
+          <div class="direction-arrow">
+            <span class="material-symbols-outlined"> arrow_forward_ios </span>
+          </div>
+          <div class="direction-dashboard">
+            <span class="material-symbols-outlined"> dashboard </span>
+            <h3>Dashboard</h3>
+          </div>
+          <div class="direction-arrow">
+            <span class="material-symbols-outlined"> arrow_forward_ios </span>
+          </div>
+          <div class="direction-bienvenue">
+            <span class="material-symbols-outlined"> send </span>
+            <h3>Modération</h3>
+          </div>
+          <div class="direction-arrow">
+            <span class="material-symbols-outlined"> arrow_forward_ios </span>
+          </div>
+          <div class="direction-serveurid">
+            <span class="material-symbols-outlined"> send </span>
+            <h3 id="idmsg"></h3>
+          </div>
+        </div>
+        <div class="dashboard-titre">
+          <h1>Bienvenue et au revoir</h1>
+          <p>Envoie automatiquement des messages et attribue des rôles à tes nouveaux membres et envoie un message lorsqu'un membre quitte ton serveur</p>        
+        </div>
+        <div class="dashboard-bienvenue">
+          <div class="dasboard-bienvenue-joinonoff">
+            <h2 class="dashboard-bienvenue-message">Envoyer un message lorsqu'un utilisateur rejoint le serveur</h2>
+            <div class="toggle-button-cover">
+              <div class="button-cover">
+                <div class="button r" id="button-3">
+                  <input type="checkbox" class="checkbox" />
+                  <div class="knobs"></div>
+                  <div class="layer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dasboard-bienvenue-joinonoff">
+            <h2 class="dashboard-bienvenue-message">Envoyer un message privé aux nouveaux utilisateurs</h2>
+            <div class="toggle-button-cover">
+              <div class="button-cover">
+                <div class="button r" id="button-3">
+                  <input type="checkbox" class="checkbox" />
+                  <div class="knobs"></div>
+                  <div class="layer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dasboard-bienvenue-joinonoff bienvenuechoice">
+            <div class="dashboard-bienvenue-joinonoff-texte">
+              <h2 class="dashboard-bienvenue-message">Attribuer un rôle aux nouveaux utilisateurs</h2>
+              <p>Les rôles sont attribués aux utilisateurs lorsqu'ils acceptent les règles du serveur.</p>
+              <div class="ligne"></div>
+              <h3>Rôle à donner</h3>
+              <div class="role-div-carrer">
+                <span class="material-symbols-outlined">
+                  add_circle
+                  </span>
+              </div>
+              <div class="bienvenue-warningmessage">
+                <h3>Les rôles sont attribués aux nouveaux utilisateurs lorsqu'ils rejoignent le serveur.</h3>
+              </div>
+            </div>
+            <div class="toggle-button-cover">
+              <div class="button-cover">
+                <div class="button r" id="button-3">
+                  <input type="checkbox" class="checkbox" />
+                  <div class="knobs"></div>
+                  <div class="layer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="dasboard-bienvenue-joinonoff">
+            <h2 class="dashboard-bienvenue-message">Envoyer un message lorsqu'un utilisateur quitte le serveur</h2>
+            <div class="toggle-button-cover">
+              <div class="button-cover">
+                <div class="button r" id="button-3">
+                  <input type="checkbox" class="checkbox" />
+                  <div class="knobs"></div>
+                  <div class="layer"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <script>
+      function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(";");
+        for (let i = 0; i < ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == " ") {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+      const cook = getCookie("guildId");
+      const idmsg = document.querySelector("#idmsg");
+      console.log(idmsg);
+      idmsg.innerText = `${cook}`;
+    </script>
+  </body>
+  <script src="/js/index.js"></script>
+</html>

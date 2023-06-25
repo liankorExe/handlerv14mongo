@@ -7,7 +7,7 @@ const { PermissionsBitField, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRow
 
 
 client.on('ready', async () => {
-    console.log(chalk.red(`${client.user.tag} Le quizzeur quizzer ! 📌`));
+    console.log(chalk.red(`${client.user.tag} Eureka ! 📌`));
     client.user.setStatus('online');
 
     setInterval(async () => {
